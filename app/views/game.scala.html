@@ -1,0 +1,30 @@
+@import views.html.helper._
+@import model.InputForm
+@import util._
+
+@( gameDisplay:Option[String], stateDisplay:Iterable[String], actionInfo:String, info:Option[List[String]] = None, error:Option[String] = None, lines:List[String] = Nil )( implicit messages:Messages )
+
+@main( "Settlers of Catan" ) {
+    <p>@gameDisplay.getOrElse( "" ).filterColors</p>
+    <br />
+    @for( l <- stateDisplay ) {
+        <p>@l</p>
+    }
+    <br />
+    @for( l <- info.getOrElse( Nil ) ) {
+        <p>@l</p>
+    }
+    <br />
+    <p>@actionInfo</p>
+    <br />
+    <p>@error.getOrElse( "" )</p>
+    <br />
+    @for( l <- lines ) {
+        <p>@l</p>
+    }
+    <br />
+    @form( action = routes.GameController.input() ) {
+        @inputText( InputForm.form( "input" ) )
+        <input type="submit" value="Send" />
+    }
+}

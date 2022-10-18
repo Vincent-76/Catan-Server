@@ -1,5 +1,7 @@
-@(test: String)
+@()
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play: @test</h1>
+@main( "Settlers of Catan" ) {
+  <h1>Welcome to Settler of Catan</h1>
+
+  <a href="@routes.GameController.game()">Start Game</a>
 }
