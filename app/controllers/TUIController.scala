@@ -21,7 +21,7 @@ import scala.util.{ Failure, Success }
  */
 
 @Singleton
-class GameController @Inject()( val controllerComponents:ControllerComponents, val actorSystem:ActorSystem, val messagesAPI:MessagesApi )( implicit executionContext:ExecutionContext ) extends BaseController with I18nSupport {
+class TUIController @Inject()( val controllerComponents:ControllerComponents, val actorSystem:ActorSystem, val messagesAPI:MessagesApi )( implicit executionContext:ExecutionContext ) extends BaseController with I18nSupport {
   val injector:Injector = Guice.createInjector( new CatanModule( test = false ) )
   val sessionControllers:mutable.Map[String, SessionController] = mutable.Map()
 
@@ -35,7 +35,7 @@ class GameController @Inject()( val controllerComponents:ControllerComponents, v
   def game( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
     val (session, controller) = _getSessionController( request.session )
     val tuiState = TUI.findTUIState( controller )
-    Ok( views.html.game( tuiState.createGameDisplay, tuiState.createStateDisplay, tuiState.getActionInfo ) ).withSession( session )
+    Ok( views.html.tui( tuiState.createGameDisplay, tuiState.createStateDisplay, tuiState.getActionInfo ) ).withSession( session )
   }
 
   def _getSessionController( session:Session ):(Session, Controller) = session.get( "sessionID" ) match {
@@ -68,7 +68,7 @@ class GameController @Inject()( val controllerComponents:ControllerComponents, v
     val gameDisplay = tuiState.createGameDisplay
     val stateDisplay = tuiState.createStateDisplay
     val actionInfo = tuiState.getActionInfo
-    Ok( views.html.game( gameDisplay, stateDisplay, actionInfo, info, error, lines ) )//.withSession( session )
+    Ok( views.html.tui( gameDisplay, stateDisplay, actionInfo, info, error, lines ) ).withSession( session )
   }
 }
 

@@ -1,0 +1,35 @@
+@import views.html.helper._
+@import model.InputForm
+@import util._
+
+@( gameDisplay:Option[String], stateDisplay:Iterable[String], actionInfo:String, info:Option[List[String]] = None, error:Option[String] = None, lines:List[String] = Nil )( implicit messages:Messages )
+
+@main( "Settlers of Catan" ) {
+    <p style="font-family:'Lucida Console', monospace;white-space:pre">@Html( gameDisplay.getOrElse( "" ).filterColors )</p>
+    @for( l <- stateDisplay ) {
+        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+    }
+    @for( l <- info.getOrElse( Nil ) ) {
+        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+    }
+    <p style="font-family:'Lucida Console', monospace">@Html( actionInfo.filterColors )</p>
+    <p style="font-family:'Lucida Console', monospace">@Html( error.getOrElse( "" ).filterColors )</p>
+    @for( l <- lines ) {
+        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+    }
+    @form( action = routes.TUIController.input() ) {
+        <table>
+            <tr>
+                <td>
+                    @input( InputForm.form( "input" ), Symbol( "_label" ) -> "" ) { ( id, name, value, args ) =>
+                        <input type="text" name="@name" id="@id" autofocus />
+                    }
+                </td>
+                <td>
+                    <input type="submit" value="->" />
+                </td>
+            </tr>
+        </table>
+    }
+}

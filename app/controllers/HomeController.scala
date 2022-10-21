@@ -9,6 +9,7 @@ import play.api._
 import play.api.mvc._
 import com.google.inject.{ Guice, Injector }
 
+import java.io.FileInputStream
 import scala.collection.mutable
 import scala.collection.mutable.Map
 
@@ -33,5 +34,8 @@ class HomeController @Inject()( val controllerComponents:ControllerComponents ) 
   }
 
 
+  def rules( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    Ok( views.html.index() )
+  }
 
 }

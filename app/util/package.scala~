@@ -64,5 +64,34 @@ package object util {
         s2._filterColors( colors, attribute )
       } else s
     }
+
+    def filterColorsWithFont:String = {
+      val textFiltered = s._filterColorsWithFont( consoleTextColors, "color" )
+      val bgFiltered = textFiltered._filterColorsWithFont( consoleBackgroundColors, "background-color" )
+      val otherFiltered = bgFiltered.use( s => consoleOther.foldLeft( s )( ( s, c ) => {
+        val res = s.replace( c, "" )
+        res
+      } ) )
+      otherFiltered//.replace( "\n", "<br />" )
+    }
+
+    def _filterColorsWithFont( colors:Map[String,String], attribute:String ):String = {
+      val indices = colors.map( c => (c._1, c._2, s.indexOf( c._1 ) ) ).filter( c => c._3 >= 0 ).toSeq.sortBy( _._3 )
+      if( indices.nonEmpty ) {
+        val first = indices.head
+        val nextTextColor = indices.lift( 1 )
+        val nextReset = s.indexOf( consoleReset, first._3 + 1 )
+        val end = if( nextTextColor.isDefined && ( nextReset < 0 || nextTextColor.get._3 < nextReset ) ) {
+          nextTextColor.get._3
+        } else if( nextReset > 0 ) {
+          nextReset
+        } else {
+          s.length
+        }
+        val s1 = s.patch( end, "</font>", 0 )
+        val s2 = s1.patch( first._3, s"<font color=\"$attribute:${first._2}\" style=\"white-space:pre\">", first._1.length )
+        s2._filterColors( colors, attribute )
+      } else s
+    }
   }
 }
