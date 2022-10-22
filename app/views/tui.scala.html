@@ -6,17 +6,28 @@
 
 @main( "Settlers of Catan" ) {
     <p style="font-family:'Lucida Console', monospace;white-space:pre">@Html( gameDisplay.getOrElse( "" ).filterColors )</p>
+    <br />
     @for( l <- stateDisplay ) {
         <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
-        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
     }
-    @for( l <- info.getOrElse( Nil ) ) {
-        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+    <br />
+    @if( info.isDefined && info.get.nonEmpty ) {
+        @for( l <- info.getOrElse( Nil ) ) {
+            <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+        }
+        <br />
     }
     <p style="font-family:'Lucida Console', monospace">@Html( actionInfo.filterColors )</p>
-    <p style="font-family:'Lucida Console', monospace">@Html( error.getOrElse( "" ).filterColors )</p>
-    @for( l <- lines ) {
-        <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+	<br />
+    @if( error.isDefined ) {
+        <p style="font-family:'Lucida Console', monospace">@Html( error.get.filterColors )</p>
+        <br />
+    }
+    @if( lines.nonEmpty ) {
+        @for( l <- lines ) {
+            <p style="font-family:'Lucida Console', monospace">@Html( l.filterColors )</p>
+        }
+        <br />
     }
     @form( action = routes.TUIController.input() ) {
         <table>

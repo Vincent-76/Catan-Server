@@ -1,4 +1,9 @@
+import com.aimit.htwg.catan.model.GameField.Field
+import com.aimit.htwg.catan.model.{ Hex, Resource }
 import com.aimit.htwg.catan.util.RichAny
+
+import scala.collection.mutable
+import scala.util.Random
 
 /**
  * @author Vincent76
@@ -37,8 +42,8 @@ package object util {
     )
 
     def filterColors:String = {
-      val textFiltered = s._filterColors( consoleTextColors, "color" )
-      val bgFiltered = textFiltered._filterColors( consoleBackgroundColors, "background-color" )
+      val textFiltered = s.filterColors( consoleTextColors, "color" )
+      val bgFiltered = textFiltered.filterColors( consoleBackgroundColors, "background-color" )
       val otherFiltered = bgFiltered.use( s => consoleOther.foldLeft( s )( ( s, c ) => {
         val res = s.replace( c, "" )
         res
@@ -46,7 +51,7 @@ package object util {
       otherFiltered//.replace( "\n", "<br />" )
     }
 
-    def _filterColors( colors:Map[String,String], attribute:String ):String = {
+    private def filterColors( colors:Map[String,String], attribute:String ):String = {
       val indices = colors.map( c => (c._1, c._2, s.indexOf( c._1 ) ) ).filter( c => c._3 >= 0 ).toSeq.sortBy( _._3 )
       if( indices.nonEmpty ) {
         val first = indices.head
@@ -61,37 +66,23 @@ package object util {
         }
         val s1 = s.patch( end, "</span>", 0 )
         val s2 = s1.patch( first._3, s"<span style=\"$attribute:${first._2};white-space:pre\">", first._1.length )
-        s2._filterColors( colors, attribute )
+        s2.filterColors( colors, attribute )
       } else s
     }
+  }
 
-    def filterColorsWithFont:String = {
-      val textFiltered = s._filterColorsWithFont( consoleTextColors, "color" )
-      val bgFiltered = textFiltered._filterColorsWithFont( consoleBackgroundColors, "background-color" )
-      val otherFiltered = bgFiltered.use( s => consoleOther.foldLeft( s )( ( s, c ) => {
-        val res = s.replace( c, "" )
-        res
-      } ) )
-      otherFiltered//.replace( "\n", "<br />" )
-    }
 
-    def _filterColorsWithFont( colors:Map[String,String], attribute:String ):String = {
-      val indices = colors.map( c => (c._1, c._2, s.indexOf( c._1 ) ) ).filter( c => c._3 >= 0 ).toSeq.sortBy( _._3 )
-      if( indices.nonEmpty ) {
-        val first = indices.head
-        val nextTextColor = indices.lift( 1 )
-        val nextReset = s.indexOf( consoleReset, first._3 + 1 )
-        val end = if( nextTextColor.isDefined && ( nextReset < 0 || nextTextColor.get._3 < nextReset ) ) {
-          nextTextColor.get._3
-        } else if( nextReset > 0 ) {
-          nextReset
-        } else {
-          s.length
-        }
-        val s1 = s.patch( end, "</font>", 0 )
-        val s2 = s1.patch( first._3, s"<font color=\"$attribute:${first._2}\" style=\"white-space:pre\">", first._1.length )
-        s2._filterColors( colors, attribute )
-      } else s
+
+  implicit class RichIterable[A]( iterable:Iterable[A] ) {
+    def mapWhere[C]( p: A => Boolean, f: A => C ):Iterable[C] = {
+      val b = iterable.iterableFactory.newBuilder[C]
+      val it = iterable.iterator
+      while( it.hasNext ) {
+        val e = it.next()
+        if( p( e ) )
+          b += f( e )
+      }
+      b.result()
     }
   }
 }

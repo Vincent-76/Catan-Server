@@ -1,0 +1,242 @@
+@vertexSize: 32px;
+
+#grid {
+  max-width: 100%;
+  max-height: 100%;
+  font-size: 0;
+  margin: auto;
+
+  > .gridRow {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    white-space: nowrap;
+
+    > .hex, .gridRowSpacer, .hexSpacer {
+      display: inline-block;
+      height: 100%;
+      aspect-ratio: cos( 30deg );
+      margin: 0;
+      font-size: initial;
+    }
+
+    /*.hex:before {
+      content: "";
+      position: absolute;
+      clip-path: polygon( 0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0% );
+      //background-color: green;
+    }*/
+
+    > .gridRowSpacer, .hexSpacer {
+      background-color: transparent;
+      width: 0 !important;
+    }
+
+    > .gridRowSpacer {
+      //aspect-ratio: 0.5 * cos( 30deg );
+    }
+  }
+}
+
+
+@roadWidth: 10%;
+@roadLength: 60%;
+@roadBorder: 10%;
+.hex {
+  position: relative;
+  overflow: visible;
+  background-size: cover;
+
+  /*> .hexBackground {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }*/
+
+  > .hexRow1, .hexRow3 {
+    width: 100%;
+    height: 25%;
+  }
+
+  .hexRow2 {
+    width: 100%;
+    height: 50%;
+
+    > .hexCell3, .hexCell5 {
+      width: @roadWidth;
+    }
+
+    > .hexCell3 {
+      margin-left: 0 - @roadWidth / 2;
+    }
+
+    > .hexCell4 {
+      width: auto;
+      float: none;
+      margin: 0 @roadWidth / 2 0 @roadWidth / 2;
+    }
+
+    > .hexCell5 {
+      float: right;
+      margin-right: 0 - @roadWidth / 2;
+    }
+
+  }
+
+  .hexCell {
+    height: 100%;
+    width: 50%;
+    float: left;
+  }
+}
+
+
+.vertex {
+  position: absolute;
+  width: @vertexSize;
+  height: @vertexSize;
+  //background-color: beige;
+  z-index: 15;
+}
+
+.vertexSW {
+  left: 0 - @vertexSize / 2;
+  margin-top: 0 - @vertexSize / 2;
+  top: 75%;
+}
+
+.vertexS {
+  left: 50%;
+  margin-left: 0 - @vertexSize / 2;
+  bottom: 0 - @vertexSize / 2;
+}
+
+.vertexSE {
+  right: 0 - @vertexSize / 2;
+  top: 75%;
+  margin-top: 0 - @vertexSize / 2;
+}
+
+
+@roadGap: ( 100% - @roadLength ) / 2;
+.road {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  //filter: url( #buildingFilter );
+
+  > .roadBorder {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background-color: black;
+  }
+
+  > .roadContent {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+}
+
+@roadXMult: cos( 30deg );
+@roadYMult: sin( 30deg );
+@roadWidthX: @roadWidth / 0.5 / 2 * @roadYMult;
+@roadWidthY: @roadWidth * cos( 30deg ) * 4 / 2 * @roadXMult;
+@roadBorderX1: @roadBorder * @roadWidth / 100 / 0.5 * @roadXMult;
+@roadBorderX2: @roadBorder * @roadWidth / 100 / 0.5 * @roadYMult;
+@roadBorderY1: @roadBorder * @roadWidth / 100 * cos( 30deg ) / 0.25 * @roadYMult;
+@roadBorderY2: @roadBorder * @roadWidth / 100 * cos( 30deg ) / 0.25 * @roadXMult;
+
+
+.roadSW {
+
+  .roadBorder {
+    clip-path: polygon(
+            @roadGap + @roadWidthX   @roadGap - @roadWidthY,
+            ( 100% - @roadGap ) + @roadWidthX   ( 100% - @roadGap ) - @roadWidthY,
+            ( 100% - @roadGap ) - @roadWidthX   ( 100% - @roadGap ) + @roadWidthY,
+            @roadGap - @roadWidthX   @roadGap + @roadWidthY
+    );
+  }
+
+  .roadContent {
+    clip-path: polygon(
+            @roadGap + @roadWidthX + @roadBorderX1 - @roadBorderX2   @roadGap - @roadWidthY + @roadBorderY1 + @roadBorderY2,
+            100% - @roadGap + @roadWidthX - @roadBorderX1 - @roadBorderX2   100% - @roadGap - @roadWidthY - @roadBorderY1 + @roadBorderY2,
+            100% - @roadGap - @roadWidthX - @roadBorderX1 + @roadBorderX2   100% - @roadGap + @roadWidthY - @roadBorderY1 - @roadBorderY2,
+            @roadGap - @roadWidthX + @roadBorderX1 + @roadBorderX2   @roadGap + @roadWidthY + @roadBorderY1 - @roadBorderY2
+    );
+  }
+}
+
+.roadSE {
+  .roadBorder {
+    clip-path: polygon(
+            @roadGap - @roadWidthX   ( 100% - @roadGap ) - @roadWidthY,
+            ( 100% - @roadGap ) - @roadWidthX   @roadGap - @roadWidthY,
+            ( 100% - @roadGap ) + @roadWidthX   @roadGap + @roadWidthY,
+            @roadGap + @roadWidthX   ( 100% - @roadGap ) + @roadWidthY
+    );
+  }
+
+  .roadContent {
+    clip-path: polygon(
+            @roadGap - @roadWidthX + @roadBorderX1 + @roadBorderX2   ( 100% - @roadGap ) - @roadWidthY - @roadBorderY1 + @roadBorderY2,
+            ( 100% - @roadGap ) - @roadWidthX - @roadBorderX1 + @roadBorderX2   @roadGap - @roadWidthY + @roadBorderY1 + @roadBorderY2,
+            ( 100% - @roadGap ) + @roadWidthX - @roadBorderX1 - @roadBorderX2   @roadGap + @roadWidthY + @roadBorderY1 - @roadBorderY2,
+            @roadGap + @roadWidthX + @roadBorderX1 - @roadBorderX2   ( 100% - @roadGap ) + @roadWidthY - @roadBorderY1 - @roadBorderY2
+    );
+  }
+}
+
+.roadE {
+  .roadBorder {
+    clip-path: polygon(
+            0 @roadGap,
+            100% @roadGap,
+            100% 100% - @roadGap,
+            0% 100% - @roadGap
+    );
+  }
+
+  @roadBorderY: @roadBorder * @roadWidth / 100 * cos( 30deg ) / 0.5;
+  .roadContent {
+    clip-path: polygon(
+            @roadBorder @roadGap + @roadBorderY,
+            100% - @roadBorder @roadGap + @roadBorderY,
+            100% - @roadBorder 100% - @roadGap - @roadBorderY,
+            @roadBorder 100% - @roadGap - @roadBorderY
+    );
+  }
+}
+
+
+
+
+/*
+.hexCell1 {
+  background-color: aqua;
+}
+.hexCell2 {
+  background-color: blue;
+}
+.hexCell3 {
+  background-color: chocolate;
+}
+.hexCell4 {
+  background-color: darkgreen;
+}
+.hexCell5 {
+  background-color: thistle;
+}
+.hexCell6 {
+  background-color: burlywood;
+}
+.hexCell7 {
+  background-color: darkmagenta;
+}
+*/

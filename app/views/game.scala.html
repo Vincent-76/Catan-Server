@@ -1,0 +1,9 @@
+@import com.aimit.htwg.catan.model.Game
+@import com.aimit.htwg.catan.model.Resource
+@* @( game:Game, hasUndo:Boolean, hasRedo:Boolean, resourceImages:Map[Resource, List[String]] ) *@
+@import model.GameData
+@( gameData:GameData )
+
+@main( "Settlers of" ) {
+	@grid( gameData )
+}

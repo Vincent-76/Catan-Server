@@ -38,4 +38,8 @@ class HomeController @Inject()( val controllerComponents:ControllerComponents ) 
     Ok( views.html.index() )
   }
 
+  def test( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    Ok( views.html.test() )
+  }
+
 }

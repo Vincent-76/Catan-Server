@@ -12,5 +12,5 @@ case class InputForm( input:String )
 object InputForm {
   val form:Form[InputForm] = Form( mapping(
     "input" -> text
-  )(InputForm.apply)(InputForm.unapply) )
+  )( InputForm.apply )( InputForm.unapply ) )
 }
