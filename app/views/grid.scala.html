@@ -87,9 +87,8 @@
 			<div class="hexCell hexCell6 roadSW">@road( hex, 0 )</div>
 			<div class="hexCell hexCell7 roadSE">@road( hex, 1 )</div>
 		</div>
-		<div class="vertex vertexSW"></div>
-		<div class="vertex vertexS"></div>
-		<div class="vertex vertexSE"></div>
+		@vertex( hex, 0, 1, "vertexS" )
+		@vertex( hex, 1, 2, "vertexSE" )
 	</div>
 }
 
@@ -97,14 +96,23 @@
 @road( hex:Hex, offsetIndex:Int ) = {
 	@defining( gameData.gameField.adjacentEdge( hex, offsetIndex ) ) { edgeOption =>
 		@if( edgeOption.isDefined && edgeOption.get.road.isDefined ) {
-			@buildRoad( hex, edgeOption.get.road.get )
+			<div class="road">
+				<div class="placementBorder"></div>
+				<div class="placementContent" style="background-color: @gameData.playerColor( edgeOption.get.road.get.owner )"></div>
+			</div>
 		}
 	}
 }
 
-@buildRoad( hex:Hex, road:Road ) = {
-	<div class="road">
-		<div class="roadBorder"></div>
-		<div class="roadContent" style="background-color: @gameData.playerColor( road.owner )"></div>
-	</div>
+@vertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int, vertexClass:String ) = {
+	@defining( gameData.gameField.adjacentVertex( hex, offsetIndex1, offsetIndex2 ) ) { vertexOption =>
+	  @if( vertexOption.isDefined && vertexOption.get.building.isDefined ) {
+		  @defining( gameData.buildingClass( vertexOption.get.building.get ) ) { buildingClass =>
+			  <div class="vertex @vertexClass @buildingClass">
+				  <div class="placementBorder"></div>
+				  <div class="placementContent" style="background-color: @gameData.playerColor( vertexOption.get.building.get.owner )"></div>
+			  </div>
+		  }
+	  }
+	}
 }

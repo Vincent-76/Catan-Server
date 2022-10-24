@@ -5,6 +5,14 @@
 @( gameDisplay:Option[String], stateDisplay:Iterable[String], actionInfo:String, info:Option[List[String]] = None, error:Option[String] = None, lines:List[String] = Nil )( implicit messages:Messages )
 
 @main( "Settlers of Catan" ) {
+
+    <style>
+            body {
+                background-color: black !important;
+                color: white;
+            }
+    </style>
+
     <p style="font-family:'Lucida Console', monospace;white-space:pre">@Html( gameDisplay.getOrElse( "" ).filterColors )</p>
     <br />
     @for( l <- stateDisplay ) {

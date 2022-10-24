@@ -1,6 +1,6 @@
 package model
 
-import com.aimit.htwg.catan.model.{ Blue, DesertArea, Game, GameField, Green, Hex, PlayerID, Red, Resource, ResourceArea, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerID, Red, Resource, ResourceArea, Settlement, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
 import controllers.routes
 
@@ -65,5 +65,10 @@ case class GameData( game:Game,
     case Blue => "blue"
     case Yellow => "yellow"
     case Red => "red"
+  }
+
+  def buildingClass( building:Building ):String = building match {
+    case _:Settlement => "settlement"
+    case _:City => "city"
   }
 }

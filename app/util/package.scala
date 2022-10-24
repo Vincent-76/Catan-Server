@@ -48,7 +48,7 @@ package object util {
         val res = s.replace( c, "" )
         res
       } ) )
-      otherFiltered//.replace( "\n", "<br />" )
+      otherFiltered
     }
 
     private def filterColors( colors:Map[String,String], attribute:String ):String = {
@@ -69,6 +69,7 @@ package object util {
         s2.filterColors( colors, attribute )
       } else s
     }
+
   }
 
 
