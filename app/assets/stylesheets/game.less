@@ -1,0 +1,73 @@
+#mainPanels {
+  display: flex;
+  height: 100%;
+}
+
+#gamePanel {
+  //float: left;
+  height: 100%;
+  width: 15%;
+  min-width: 100px; // TODO
+  border: 0.75vw solid transparent;
+  box-sizing: border-box;
+
+  > #resourcesPanel {
+    width: 100%;
+    height: 30%;
+    background-position: center;
+    background-size: 128px;
+    background-repeat: repeat;
+    border-bottom: 0.75vw solid transparent;
+    box-sizing: border-box;
+  }
+
+  > #playerListPanel {
+    width: 100%;
+    height: 70%;
+    background-position: center;
+    background-size: 430px;
+    background-repeat: repeat;
+  }
+}
+
+#gridPanel {
+  @margin: 2%;
+
+  position: relative;
+  //float: left;
+  flex-grow: 1;
+  height: 100%;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-repeat: no-repeat;
+  //background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
+  border: 1vw solid transparent;
+  box-sizing: border-box;
+
+  > #compass {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 3%;
+    margin-bottom: 3%;
+    height: 20%;
+    aspect-ratio: 1;
+  }
+
+  > div {
+    margin: @margin;
+    max-height: 100% - 2 * @margin;
+  }
+}
+
+#logPanel {
+  //float: right;
+  height: 100%;
+  width: 15%;
+  min-width: 100px; // TODO
+  background-color: gray;
+}

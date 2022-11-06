@@ -1,18 +1,19 @@
 @()
 
-@main( "Settlers of Catan" ) {
-  <h1>Welcome to Settler of Catan</h1>
+<style>
+  body {
+    background-image: url( @routes.Assets.versioned( "images/main_theme.jpg" ) );
+  }
+</style>
 
-  <h2>Rules:</h2>
-  <a target="_blank" href="/rules">Click here to open the rules</a>
-  <br />
-  <br />
-  <a href="@routes.GameController.game()">Start Game</a>
-  <br />
-  <br />
-  <a href="@routes.TUIController.game()">Start Game with TUI</a>
-  <br />
-  <br />
-  <iframe src="/rules"></iframe>
+@main( stylesheets = List( "index.css" ) ) {
+  <div id="content">
+    <img id="header" src="@routes.Assets.versioned( "images/main_header.png" )" alt="Settlers of Catan" />
+    <div id="buttons">
+      <a href="@routes.GameController.game()" class="button">Start Game</a>
+      <a href="@routes.TUIController.game()" class="button">Start Game with TUI</a>
+      <a target="_blank" href="/rules" class="button">Click here to open the rules</a>
+    </div>
+  </div>
 
 }

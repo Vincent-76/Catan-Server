@@ -1,8 +1,7 @@
 package model
 
-import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerID, Red, Resource, ResourceArea, Settlement, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
-import controllers.routes
 
 import scala.collection.mutable
 import scala.math.cos
@@ -60,6 +59,29 @@ case class GameData( game:Game,
     s"images/$imagePath"
   }
 
+  def hexClass( hex:Hex ):String = hex.area match {
+    case _:WaterArea => "waterArea"
+    case _:DesertArea => "desert landArea"
+    case r:ResourceArea => r.resource.title + " resourceArea landArea"
+  }
+
+  def getRoad( hex:Hex, offsetIndex:Int ):Option[Road] =
+    gameField.adjacentEdge( hex, offsetIndex ).flatMap( _.road )
+
+  def getBuilding( hex:Hex, offsetIndex1:Int, offsetIndex2:Int ):Option[Building] =
+    gameField.adjacentVertex( hex, offsetIndex1, offsetIndex2 ).flatMap( _.building )
+
+  def structureDisplayClass( structure:Option[Structure] ):String = structure match {
+    case Some( _ ) => "structureBuilt"
+    case None => "structureNotBuilt"
+  }
+
+  def structureColor( structure:Option[Structure] ):String = structure match {
+    case Some( s ) => playerColor( s.owner )
+    case None => "transparent"
+  }
+
+
   def playerColor( pID:PlayerID ):String = game.player( pID ).color match {
     case Green => "green"
     case Blue => "blue"
@@ -67,8 +89,9 @@ case class GameData( game:Game,
     case Red => "red"
   }
 
-  def buildingClass( building:Building ):String = building match {
-    case _:Settlement => "settlement"
-    case _:City => "city"
+  def buildingClass( building:Option[Building] ):String = building match {
+    case Some( _:Settlement ) => "settlement"
+    case Some( _:City ) => "city"
+    case None => ""
   }
 }

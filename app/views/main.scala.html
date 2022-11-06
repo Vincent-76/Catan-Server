@@ -4,7 +4,7 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@(title: String)(content: Html)
+@(title: String = "Settlers of Catan", stylesheets:List[String] = List.empty)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,9 +12,19 @@
         @* Here's where we render the page title `String`. *@
         <title>@title</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        @for( s <- stylesheets ) {
+            <link rel="stylesheet" media="screen" href="@routes.Assets.versioned( s"stylesheets/$s" )">
+        }
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
     </head>
+
+    <style>
+        body {
+            cursor: url( @routes.Assets.versioned( "images/cursor.png" ) ), auto;
+        }
+    </style>
+
     <body>
         @* And here's where we render the `Html` object containing
          * the page content. *@

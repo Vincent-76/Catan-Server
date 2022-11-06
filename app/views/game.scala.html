@@ -2,8 +2,44 @@
 @import com.aimit.htwg.catan.model.Resource
 @* @( game:Game, hasUndo:Boolean, hasRedo:Boolean, resourceImages:Map[Resource, List[String]] ) *@
 @import model.GameData
+
 @( gameData:GameData )
 
-@main( "Settlers of" ) {
-	@grid( gameData )
+<style>
+	.ropeBorder {
+		border-image: url( @routes.Assets.versioned( "images/rope_border.png" ) ) 205 round !important;
+	}
+
+	#resourcesPanel {
+		background-image: url( @routes.Assets.versioned( "images/wood_background.jpg" ) );
+	}
+
+	#playerListPanel {
+		background-image: url( @routes.Assets.versioned( "images/stone_background.jpg" ) );
+	}
+
+	#gridPanel {
+		background-image: url( @routes.Assets.versioned( "images/map_background.png" ) );
+		border-image: url( @routes.Assets.versioned( "images/map_border.png" ) ) 11 round !important;
+	}
+</style>
+
+@main( stylesheets = List( "game.css", "grid.css" ) ) {
+	<div id="mainPanels">
+		<div id="gamePanel" class="ropeBorder">
+			<div id="resourcesPanel" class="ropeBorder"></div>
+			<div id="playerListPanel"></div>
+		</div>
+		<div id="gridPanel">
+			<img id="compass" src="@routes.Assets.versioned( "images/compass.png" )" />
+			<div>
+				@grid( gameData )
+			</div>
+		</div>
+		<div id="turnPanel">
+			<div id="playerPanel"></div>
+			<div id="actionPanel"></div>
+		</div>
+		<div id="logPanel"></div>
+	</div>
 }
