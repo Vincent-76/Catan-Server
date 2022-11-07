@@ -1,0 +1,10 @@
+- GameSetup
+	- Settlers logo
+	- dropdowns for game configuration
+	- add players
+	- dice out beginner
+- Index new game confirmation dialog
+
+- Largest Army / Longest Road
+
+- better compass

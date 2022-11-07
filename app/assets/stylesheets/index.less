@@ -1,6 +1,5 @@
 
 body {
-  background-color: #9B3A3A;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -18,6 +17,10 @@ body {
   height: 30%;
 }
 
-#buttons > .button:not(:last-child) {
-  margin-bottom: 10%;
+#buttons > .button:not(:first-child) {
+  margin-top: 10%;
+}
+
+#buttons > .button:nth-child( even ) {
+  margin-top: 5%;
 }

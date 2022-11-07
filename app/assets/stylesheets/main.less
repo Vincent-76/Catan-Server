@@ -1,12 +1,20 @@
 @textColor: black;
 @buttonBorderColor: #392F31;
 
+* {
+  user-select: none;
+}
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+body {
   font-family: Georgia, Times, Times New Roman, serif;
+  background-color: #C0A886;
 }
 
 .button {
@@ -20,8 +28,8 @@ html, body {
   color: @textColor;
   font-size: 1.2em;
   font-weight: bold;
-  cursor: inherit;
-  transition: box-shadow 0.2s ease-in-out;
+  //cursor: inherit;
+  transition: box-shadow 0.1s ease-in-out;
 }
 
 .button:hover {

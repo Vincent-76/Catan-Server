@@ -43,6 +43,20 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
 
 
 
+  def hasGameSession( session:Session ):Boolean = session.get( "sessionID" ) match {
+    case Some( sessionID ) => _gameSessions.contains( sessionID ) || hasSaveGame( sessionID )
+    case None => false
+  }
+
+  def getNewGameSession( session:Session ):(Session, GameSession) = session.get( "sessionID" ) match {
+    case Some( sessionID ) =>
+      deleteSaveGame( sessionID )
+      (session, createNewGameSession( sessionID ))
+    case None =>
+      val sessionID = java.util.UUID.randomUUID().toString
+      (session + ("sessionID" -> sessionID), createNewGameSession( sessionID ))
+  }
+
   def getGameSession( session:Session ):(Session, GameSession) = session.get( "sessionID" ) match {
     case Some( sessionID ) => (session, checkSessionController( sessionID ))
     case None =>
@@ -54,12 +68,27 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
     case Some( gameSession ) =>
       _gameSessions( sessionID ) = gameSession.update()
       gameSession
-    case None =>
-      val controller = _injector.getInstance( classOf[Controller] )
+    case None => createNewGameSession( sessionID, load = true )
+  }
+
+  private def createNewGameSession( sessionID:String, load:Boolean = false ):GameSession = {
+    val controller = _injector.getInstance( classOf[Controller] )
+    if( load )
       findSaveGamePath( sessionID ).foreach( controller.loadGame )
-      val gameSession = GameSession( controller )
-      _gameSessions( sessionID ) = gameSession
-      gameSession
+    val gameSession = GameSession( controller )
+    _gameSessions( sessionID ) = gameSession
+    gameSession
+  }
+
+  private def hasSaveGame( sessionID:String ):Boolean = {
+    val dir = new java.io.File( CatanModule.savegamePath )
+    if( dir.exists && dir.isDirectory ) {
+      try {
+        dir.listFiles.exists( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) )
+      } catch {
+        case _:java.lang.SecurityException => false
+      }
+    } else false
   }
 
   private def findSaveGamePath( sessionID:String ):Option[String] = {
@@ -71,5 +100,16 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
         case _:java.lang.SecurityException => None
       }
     } else None
+  }
+
+  private def deleteSaveGame( sessionID:String ):Unit = {
+    val dir = new java.io.File( CatanModule.savegamePath )
+    if( dir.exists && dir.isDirectory ) {
+      try {
+        dir.listFiles.find( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) ).foreach( _.delete() )
+      } catch {
+        case _:java.lang.SecurityException => None
+      }
+    }
   }
 }

@@ -1,18 +1,22 @@
-@()
-
-<style>
-  body {
-    background-image: url( @routes.Assets.versioned( "images/main_theme.jpg" ) );
-  }
-</style>
-
+@( gameSessionExists:Boolean )
 @main( stylesheets = List( "index.css" ) ) {
+
+  <style>
+    body {
+      background-image: url( @routes.Assets.versioned( "images/main_theme.jpg" ) );
+    }
+  </style>
+
   <div id="content">
     <img id="header" src="@routes.Assets.versioned( "images/main_header.png" )" alt="Settlers of Catan" />
     <div id="buttons">
-      <a href="@routes.GameController.game()" class="button">Start Game</a>
-      <a href="@routes.TUIController.game()" class="button">Start Game with TUI</a>
-      <a target="_blank" href="/rules" class="button">Click here to open the rules</a>
+      @if( gameSessionExists ) {
+        <a href="@routes.GameController.game()" class="button">Resume Game</a>
+        <a href="@routes.TUIController.game()" class="button">Resume Game (TUI)</a>
+      }
+      <a href="@routes.GameController.newGame()" class="button">Start New Game</a>
+      <a href="@routes.TUIController.newGame()" class="button">Start New Game (TUI)</a>
+      <a target="_blank" href="/rules" class="button">Open Rules</a>
     </div>
   </div>
 

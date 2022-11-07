@@ -92,6 +92,6 @@ case class GameData( game:Game,
   def buildingClass( building:Option[Building] ):String = building match {
     case Some( _:Settlement ) => "settlement"
     case Some( _:City ) => "city"
-    case None => ""
+    case _ => ""
   }
 }

@@ -1,5 +1,5 @@
 import com.aimit.htwg.catan.model.GameField.Field
-import com.aimit.htwg.catan.model.{ DesertArea, Game, GameField, Hex, Resource, ResourceArea, WaterArea }
+import com.aimit.htwg.catan.model.{ DesertArea, Game, GameField, Hex, Resource, ResourceArea, WaterArea, Wood }
 import com.aimit.htwg.catan.util.{ RichAny, RichOption }
 
 import scala.collection.mutable

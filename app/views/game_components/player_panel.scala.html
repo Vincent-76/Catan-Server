@@ -1,0 +1,62 @@
+@import model.GameData
+@import com.aimit.htwg.catan.model.Resource
+@import com.aimit.htwg.catan.model.Player
+@import com.aimit.htwg.catan.model.Wood
+@import com.aimit.htwg.catan.model.Clay
+@import com.aimit.htwg.catan.model.Sheep
+@import com.aimit.htwg.catan.model.Wheat
+@import com.aimit.htwg.catan.model.Ore
+@( gameData:GameData, player:Player )
+
+<style>
+	#playerPanel {
+		background-image: url( @routes.Assets.versioned( "images/wood_background.jpg" ) );
+	}
+</style>
+
+<div id="playerPanel" class="ropeBorder">
+	<div class="playerHeader">
+		<div class="playerPoints" style="border-color: @gameData.playerColor( player.id )">
+			<p>@player.victoryPoints</p>
+		</div>
+		<p class="playerName">@player.name</p>
+	</div>
+	<table>
+		<tr>
+			<td>@playerResourceStack( Wood )</td>
+			<td>@playerResourceStack( Clay )</td>
+			<td>@playerResourceStack( Sheep )</td>
+		</tr>
+		<tr>
+			<td>@playerResourceStack( Wheat )</td>
+			<td>@playerResourceStack( Ore )</td>
+			<td></td>
+		</tr>
+	</table>
+	<div id="playerDevCards">
+		@for( devCard <- player.devCards ) {
+			<a href="#devCard@devCard.title" class="playerDevCard">@devCard.title</a>
+		}
+	</div>
+</div>
+
+@for( devCard <- player.devCards.distinct ) {
+	<a href="#" id="devCard@devCard.title" class="devCardDialog">
+		<img src="@routes.Assets.versioned( s"images/devCards/${devCard.title.toLowerCase}.png" )" alt="@devCard.title">
+	</a>
+}
+
+@playerResourceStack( r:Resource ) = {
+	@playerStack(
+		s"images/resources/${r.title.toLowerCase}.png",
+		player.resourceAmount( r ),
+		r.title
+	)
+}
+
+@playerStack( path:String, amount:Int, alt:String ) = {
+	<div class="playerStack">
+		<img src="@routes.Assets.versioned( path )" alt="@alt" />
+		<p>@amount</p>
+	</div>
+}

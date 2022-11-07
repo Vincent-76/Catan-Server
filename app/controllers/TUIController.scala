@@ -23,6 +23,12 @@ import scala.util.{ Failure, Success }
 @Singleton
 class TUIController @Inject()( val sessionController:SessionController, val controllerComponents:ControllerComponents, val messagesAPI:MessagesApi ) extends BaseController with I18nSupport {
 
+  def newGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    val (session, gameSession) = sessionController.getNewGameSession( request.session )
+    val tuiState = TUI.findTUIState( gameSession.controller )
+    Ok( views.html.tui( tuiState.createGameDisplay, tuiState.createStateDisplay, tuiState.getActionInfo ) ).withSession( session )
+  }
+
   def game( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
     val (session, gameSession) = sessionController.getGameSession( request.session )
     val tuiState = TUI.findTUIState( gameSession.controller )

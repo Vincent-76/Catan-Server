@@ -19,7 +19,7 @@ import scala.collection.mutable.Map
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()( val controllerComponents:ControllerComponents ) extends BaseController {
+class HomeController @Inject()( val sessionController:SessionController, val controllerComponents:ControllerComponents ) extends BaseController {
 
 
   /**
@@ -30,13 +30,9 @@ class HomeController @Inject()( val controllerComponents:ControllerComponents ) 
    * a path of `/`.
    */
   def index( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
-    Ok( views.html.index() )
+    Ok( views.html.index( sessionController.hasGameSession( request.session ) ) )
   }
 
-
-  def rules( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
-    Ok( views.html.index() )
-  }
 
   def test( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
     Ok( views.html.test() )

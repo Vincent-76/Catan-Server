@@ -1,0 +1,93 @@
+
+#playerListPanel {
+  flex-grow: 1;
+  width: 100%;
+  background-position: center;
+  background-size: 430px;
+  background-repeat: repeat;
+  //display: flex;
+  //flex-direction: column;
+
+}
+
+.playerCard {
+  @margin: 10px;
+
+  flex-grow: 1;
+  margin: @margin @margin @margin@margin;
+  border: solid 0.4vw black;
+  box-sizing: border-box;
+  background-position: center;
+  background-size: 128px;
+  background-repeat: repeat;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /*&:first-child {
+    margin-top: @margin !important;
+  }
+
+  &:last-child {
+    margin-bottom: @margin !important;
+  }*/
+}
+
+.playerCardHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.playerCardPoints {
+  float: left;
+  border: solid 0.3vw transparent;
+  border-radius: 100%;
+  aspect-ratio: 1;
+  height: 30%;
+  min-height: 24px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > p {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 0;
+  }
+}
+
+.playerCardName {
+  margin: 0 0 0 5%;
+  float: left;
+  color: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playerDisplayInfos {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.playerDisplayInfo {
+  width: 100%;
+  color: white;
+  font-size: 1em;
+  display: flex;
+
+  > .playerDisplayInfoLabel {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  > .playerDisplayInfoValue {
+  }
+}

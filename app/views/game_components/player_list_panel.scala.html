@@ -1,0 +1,54 @@
+@import model.GameData
+@import com.aimit.htwg.catan.model.Player
+@import com.aimit.htwg.catan.model.KnightCard
+@( gameData:GameData )
+
+
+<style>
+	#playerListPanel {
+		background-image: url( @routes.Assets.versioned( "images/stone_background.jpg" ) );
+	}
+
+	.playerCard {
+		background-image: url( @routes.Assets.versioned( "images/wood_background.jpg" ) );
+		border-image: url( @routes.Assets.versioned( "images/metal_border.png" ) ) 24 stretch !important;
+		@defining( gameData.game.players.size ) { players =>
+			height: calc( @{ 100 / players }% - @{ ( players + 1 ) * 10 / players }px )
+		}
+	}
+</style>
+
+<div id="playerListPanel">
+	@for( i <- ( 0 until gameData.game.maxPlayers ) ) {
+		@defining( gameData.game.players.find( _._1.id == i ) ) { playerOption =>
+			@if( playerOption.isDefined ) {
+				@playerDisplay( playerOption.get._2 )
+			}
+		}
+	}
+</div>
+
+@playerDisplay( p:Player ) = {
+	<div class="playerCard">
+		<div class="playerCardHeader">
+			<div class="playerCardPoints" style="border-color: @gameData.playerColor( p.id )">
+				<p>@gameData.game.getPlayerDisplayVictoryPoints( p.id )</p>
+			</div>
+			<p class="playerCardName">@p.name</p>
+		</div>
+		<div class="playerDisplayInfos">
+			<div class="playerDisplayInfo">
+				<div class="playerDisplayInfoLabel">Resources:</div>
+				<div class="playerDisplayInfoValue">@p.resourceAmount</div>
+			</div>
+			<div class="playerDisplayInfo">
+				<div class="playerDisplayInfoLabel">Dev. Cards:</div>
+				<div class="playerDisplayInfoValue">@p.devCards.size</div>
+			</div>
+			<div class="playerDisplayInfo">
+				<div class="playerDisplayInfoLabel">Knights:</div>
+				<div class="playerDisplayInfoValue">@p.devCards.count( c => c == KnightCard )</div>
+			</div>
+		</div>
+	</div>
+}
