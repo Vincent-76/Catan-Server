@@ -11,6 +11,6 @@ case class TUIInput( input:String )
 
 object TUIInput {
   val form:Form[TUIInput] = Form( mapping(
-    "input" -> text
+    "form_input" -> text
   )( TUIInput.apply )( TUIInput.unapply ) )
 }

@@ -1,7 +1,7 @@
 @import model.form.TUIInput
 @import util._
-@import util.ConsoleString
-
+@import views.html.form_util.form_input
+@import views.html.helper.form
 @( gameDisplay:Option[String], stateDisplay:Iterable[String], actionInfo:String, info:Option[List[String]] = None, error:Option[String] = None, lines:List[String] = Nil )( implicit messages:Messages )
 
 @main() {
@@ -41,7 +41,7 @@
         <table>
             <tr>
                 <td>
-                    @util.input( TUIInput.form( "input" ) )
+                    @form_input( TUIInput.form( "form_input" ), autofocus = true )
                 </td>
                 <td>
                     <input type="submit" value="->" />

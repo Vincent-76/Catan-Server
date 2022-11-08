@@ -49,7 +49,7 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
 
   def createGame( ):Action[NewGame] = formAction( NewGame.form, showGameErrors ) { implicit request:Request[NewGame] =>
     sessionController.deleteGameSession( request.session )
-    val module = request.body.module.create( fileIO = request.body.fileIO, availablePlacements = request.body.availablePlacements )
+    val module = request.body.module.instance( fileIO = request.body.fileIO, availablePlacements = request.body.availablePlacements )
     sessionController.newGameSession( request.session, module )
     Redirect( routes.GameController.game() )
   }

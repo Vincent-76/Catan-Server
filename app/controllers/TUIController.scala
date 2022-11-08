@@ -22,7 +22,7 @@ class TUIController @Inject()( val sessionController:SessionController, val cont
     if( gameSession.isDefined )
       (session, gameSession.get)
     else
-      sessionController.newGameSession( requestSession, ClassicCatanModule.create() )
+      sessionController.newGameSession( requestSession, ClassicCatanModule.instance() )
   }
 
   def newGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
@@ -30,9 +30,7 @@ class TUIController @Inject()( val sessionController:SessionController, val cont
     Redirect( routes.TUIController.game() )
   }
 
-  def game( delete:Boolean = false ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
-    if( delete )
-      sessionController.deleteGameSession( request.session )
+  def game():Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
     val (session, gameSession) = getOrCreateGameSession( request.session )
     val inputForm = TUIInput.form.bindFromRequest()
     val (info, error, lines) = if( inputForm.value.isDefined )
