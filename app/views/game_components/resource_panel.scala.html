@@ -40,9 +40,9 @@
 
 @resourceStack( r:Resource ) = {
 	@gameStack(
-		s"images/resources/${r.title.toLowerCase}.png",
+		s"images/resources/${r.name.toLowerCase}.png",
 		gameData.game.resourceCards.getOrElse( r, 0 ),
-		r.title
+		r.name
 	)
 }
 

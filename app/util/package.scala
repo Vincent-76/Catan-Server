@@ -1,9 +1,5 @@
-import com.aimit.htwg.catan.model.GameField.Field
-import com.aimit.htwg.catan.model.{ DesertArea, Game, GameField, Hex, Resource, ResourceArea, WaterArea, Wood }
+import com.aimit.htwg.catan.model._
 import com.aimit.htwg.catan.util.{ RichAny, RichOption }
-
-import scala.collection.mutable
-import scala.util.Random
 
 /**
  * @author Vincent76
@@ -97,15 +93,24 @@ package object util {
         case _ => false
       } ).getOrElse( 0 )
       port.specific match {
-        case Some( r ) => s"ports/${r.title.toLowerCase}/$rotNr.png"
+        case Some( r ) => s"ports/${r.name.toLowerCase}/$rotNr.png"
         case None => s"ports/unspecific/$rotNr.png"
       }
     case area:ResourceArea =>
       val i = resourceCounter.getOrElse( area.resource, 0 )
       resourceCounter( area.resource ) = i + 1
       resourceImages.getOrElse( area.resource, List.empty ).lift( i ).useOrElse(
-        s => s"${area.resource.title.toLowerCase}/$s",
+        s => s"${area.resource.name.toLowerCase}/$s",
         "water.png" // TODO fallback image
       )
+  }
+
+  implicit class RichTuple2[T1, T2]( t:(T1, T2) ) {
+    private def default[T, R]( x:T ):R = x.asInstanceOf[R]
+
+    def map[R1, R2]( f1:T1 => R1 = x => default[T1, R1]( x ), f2:T2 => R2 = x => default[T2, R2]( x ) ):(R1, R2) = (
+      f1( t._1 ),
+      f2( t._2 )
+    )
   }
 }

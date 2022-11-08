@@ -1,0 +1,5 @@
+@( field:Field, id:String = "", classes:String = "", autofocus:Boolean = false )( implicit messages: Messages)
+
+@views.html.helper.input( field, Symbol( "_label" ) -> "" ) { (id, name, value, args) =>
+	<input id="@id" class="@classes" type="text" name="@name" @{ if( autofocus ) "autofocus" else "" } value="@value" />
+}

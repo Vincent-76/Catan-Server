@@ -34,7 +34,7 @@ object GameSession {
 
   private def getResourceImageVariants( r:Resource ):List[String] = {
     try {
-      val dir = new java.io.File( s"public/images/${r.title.toLowerCase}" )
+      val dir = new java.io.File( s"public/images/${r.name.toLowerCase}" )
       if( dir.exists() && dir.isDirectory )
         dir.listFiles().toList.map( _.getName )
       else Nil
@@ -44,7 +44,10 @@ object GameSession {
   }
 }
 
-case class GameSession( controller:Controller, resourceImages:Map[Resource, List[String]], timestamp:Long = java.time.Instant.now().getEpochSecond ) {
+case class GameSession( controller:Controller,
+                        resourceImages:Map[Resource, List[String]],
+                        timestamp:Long = java.time.Instant.now().getEpochSecond,
+                      ) {
 
   def update():GameSession = copy( controller, resourceImages )
 }

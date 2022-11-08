@@ -4,6 +4,8 @@
 	- add players
 	- dice out beginner
 - Index new game confirmation dialog
+- Game
+	- Save/Load/Undo/Redo buttons in logpanel
 
 - Largest Army / Longest Road
 

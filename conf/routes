@@ -12,13 +12,15 @@ GET		/rules						controllers.Assets.at( path = "/public", file = "documents/rule
 
 GET     /tui		              	controllers.TUIController.game()
 
-GET     /tui/new	              	controllers.TUIController.newGame()
+GET		/tui/new					controllers.TUIController.newGame()
 
-POST	/tui						controllers.TUIController.input()
-
-GET		/game						controllers.GameController.game()
+POST	/tui						controllers.TUIController.game()
 
 GET		/game/new					controllers.GameController.newGame()
+
+POST	/game/create				controllers.GameController.createGame()
+
+GET		/game						controllers.GameController.game()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned( path="/public", file: Asset )

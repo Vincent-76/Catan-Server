@@ -1,5 +1,10 @@
 @import model.GameData
-@( gameData:GameData )
+@import views.html.helper.form
+@import model.form.NewGame
+@import views.html.helper.select
+@import com.aimit.htwg.catan.CatanModule
+@import model.ValidationError
+@( gameData:Option[GameData] = None, errors:Map[String, List[String]] = Map.empty )( implicit messages:Messages )
 
 
 @main( stylesheets = List( "game_setup.css" ) ) {
@@ -10,5 +15,22 @@
 		}
 	</style>
 
+	@form( action = routes.GameController.createGame(), Symbol( "method" ) -> "POST" ) {
+		@select(
+			field = NewGame.form( "module" ),
+			options = CatanModule.impls.map( impl => (impl.name -> impl.name) ).toSeq,
+			Symbol( "id" ) -> "moduleSelect",
+			Symbol( "class" ) -> "button"
+		)
+		<br />
+		<input type="submit" value="->" />
+	}
 
+	@for( err <- errors ) {
+		<p>@err._1:@err._2.map( ValidationError.msg ).mkString( "," )</p>
+	}
+
+	@if( gameData.isDefined ) {
+		<div>@gameData.get.game.seed</div>
+	}
 }

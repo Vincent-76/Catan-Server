@@ -80,12 +80,12 @@
 		</div>
 		<div class="hexRow2">
 			<div class="hexCell hexCell3"></div>
-			<div class="hexCell hexCell5">@road( hex, 2, "roadE" )</div>
+			<div class="hexCell hexCell5 road roadE">@road( hex, 2 )</div>
 			<div class="hexCell hexCell4"></div>
 		</div>
 		<div class="hexRow3">
-			<div class="hexCell hexCell6">@road( hex, 0, "roadSW" )</div>
-			<div class="hexCell hexCell7">@road( hex, 1, "roadSE" )</div>
+			<div class="hexCell hexCell6 road roadSW">@road( hex, 0 )</div>
+			<div class="hexCell hexCell7 road roadSE">@road( hex, 1 )</div>
 		</div>
 		@vertex( hex, 0, 1, "vertexS" )
 		@vertex( hex, 1, 2, "vertexSE" )
@@ -93,18 +93,18 @@
 }
 
 
-@road( hex:Hex, offsetIndex:Int, positionClass:String ) = {
+@road( hex:Hex, offsetIndex:Int ) = {
 	@defining( gameData.getRoad( hex, offsetIndex ) ) { road =>
-		<div class="road @positionClass @gameData.structureDisplayClass( road )">
+		<div class="road @gameData.structureDisplayClass( road )">
 			<div class="placementBorder"></div>
 			<div class="placementContent" style="background-color: @gameData.structureColor( road )"></div>
 		</div>
 	}
 }
 
-@vertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int, positionClass:String ) = {
+@vertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int, vertexClass:String ) = {
 	@defining( gameData.getBuilding( hex, offsetIndex1, offsetIndex2 ) ) { building =>
-		  <div class="vertex @positionClass @gameData.structureDisplayClass( building ) @gameData.buildingClass( building )">
+		  <div class="vertex @vertexClass @gameData.structureDisplayClass( building ) @gameData.buildingClass( building )">
 			  <div class="placementBorder"></div>
 			  <div class="placementContent" style="background-color: @gameData.structureColor( building )"></div>
 		  </div>

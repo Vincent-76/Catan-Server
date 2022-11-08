@@ -35,22 +35,22 @@
 	</table>
 	<div id="playerDevCards">
 		@for( devCard <- player.devCards ) {
-			<a href="#devCard@devCard.title" class="playerDevCard">@devCard.title</a>
+			<a href="#devCard@devCard.name" class="playerDevCard">@devCard.name</a>
 		}
 	</div>
 </div>
 
 @for( devCard <- player.devCards.distinct ) {
-	<a href="#" id="devCard@devCard.title" class="devCardDialog">
-		<img src="@routes.Assets.versioned( s"images/devCards/${devCard.title.toLowerCase}.png" )" alt="@devCard.title">
+	<a href="#" id="devCard@devCard.name" class="devCardDialog">
+		<img src="@routes.Assets.versioned( s"images/devCards/${devCard.name.toLowerCase}.png" )" alt="@devCard.name">
 	</a>
 }
 
 @playerResourceStack( r:Resource ) = {
 	@playerStack(
-		s"images/resources/${r.title.toLowerCase}.png",
+		s"images/resources/${r.name.toLowerCase}.png",
 		player.resourceAmount( r ),
-		r.title
+		r.name
 	)
 }
 

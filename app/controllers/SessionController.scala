@@ -3,7 +3,9 @@ package controllers
 import akka.actor.ActorSystem
 import com.aimit.htwg.catan.CatanModule
 import com.aimit.htwg.catan.controller.Controller
-import com.google.inject.{ Guice, Injector }
+import com.aimit.htwg.catan.model.{ FileIO, Game }
+import com.aimit.htwg.catan.util.UndoManager
+import com.google.inject.Guice
 import model.GameSession
 import play.api.inject.ApplicationLifecycle
 import play.api.mvc.Session
@@ -20,19 +22,18 @@ import scala.reflect.io.File
 
 @Singleton
 class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: ApplicationLifecycle )( implicit executionContext:ExecutionContext ) {
-  val _injector:Injector = Guice.createInjector( new CatanModule( test = false ) )
-  val _gameSessions:mutable.Map[String, GameSession] = mutable.Map()
+  private val gameSessions:mutable.Map[String, GameSession] = mutable.Map()
 
   CatanModule.init()
 
   lifeCycle.addStopHook( () => saveAll() )
-  private def saveAll( ):Future[_] = Future.sequence( _gameSessions.toSeq.map( s => Future {
+  private def saveAll( ):Future[_] = Future.sequence( gameSessions.toSeq.map( s => Future {
     s._2.controller.saveGame( Some( getSaveGamePath( s._1 ) ) )
   } ) )
 
   actorSystem.scheduler.scheduleAtFixedRate( 0.seconds, 1.minutes ) { () =>
     val now = java.time.Instant.now().getEpochSecond
-    _gameSessions.filterInPlace( ( sessionID, gameSession ) => {
+    gameSessions.filterInPlace( ( sessionID, gameSession ) => {
       gameSession.controller.saveGame( Some( getSaveGamePath( sessionID ) ) )
       ( now - gameSession.timestamp ) < ( 60 * 60 )
     } )
@@ -44,39 +45,47 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
 
 
   def hasGameSession( session:Session ):Boolean = session.get( "sessionID" ) match {
-    case Some( sessionID ) => _gameSessions.contains( sessionID ) || hasSaveGame( sessionID )
+    case Some( sessionID ) => gameSessions.contains( sessionID ) || hasSaveGame( sessionID )
     case None => false
   }
 
-  def getNewGameSession( session:Session ):(Session, GameSession) = session.get( "sessionID" ) match {
+  def deleteGameSession( session:Session ):Unit = session.get( "sessionID" ) match {
+    case Some( sessionID ) =>
+      gameSessions.remove( sessionID )
+      deleteSaveGame( sessionID )
+    case None =>
+  }
+
+  def newGameSession( session:Session, catanModule:CatanModule ):(Session, GameSession) = session.get( "sessionID" ) match {
     case Some( sessionID ) =>
       deleteSaveGame( sessionID )
-      (session, createNewGameSession( sessionID ))
+      (session, createNewGameSession( sessionID, catanModule ))
     case None =>
       val sessionID = java.util.UUID.randomUUID().toString
-      (session + ("sessionID" -> sessionID), createNewGameSession( sessionID ))
+      (session + ("sessionID" -> sessionID), createNewGameSession( sessionID, catanModule ))
   }
 
-  def getGameSession( session:Session ):(Session, GameSession) = session.get( "sessionID" ) match {
-    case Some( sessionID ) => (session, checkSessionController( sessionID ))
+  def getGameSession( session:Session ):(Session, Option[GameSession]) = session.get( "sessionID" ) match {
+    case Some( sessionID ) => (session, getGameSession( sessionID ))
     case None =>
       val sessionID = java.util.UUID.randomUUID().toString
-      (session + ("sessionID" -> sessionID), checkSessionController( sessionID ))
+      (session + ("sessionID" -> sessionID), getGameSession( sessionID ))
   }
 
-  private def checkSessionController( sessionID:String ):GameSession = _gameSessions.get( sessionID ) match {
+  private def getGameSession( sessionID:String ):Option[GameSession] = gameSessions.get( sessionID ) match {
     case Some( gameSession ) =>
-      _gameSessions( sessionID ) = gameSession.update()
-      gameSession
-    case None => createNewGameSession( sessionID, load = true )
+      gameSessions( sessionID ) = gameSession.update()
+      Some( gameSession )
+    case None => findSaveGamePath( sessionID ).map( path => {
+      val loaded = FileIO.load( path )
+      GameSession( new Controller( loaded._2._1, loaded._1, new UndoManager( loaded._2._2, loaded._2._3 ) ) )
+    } );
   }
 
-  private def createNewGameSession( sessionID:String, load:Boolean = false ):GameSession = {
-    val controller = _injector.getInstance( classOf[Controller] )
-    if( load )
-      findSaveGamePath( sessionID ).foreach( controller.loadGame )
-    val gameSession = GameSession( controller )
-    _gameSessions( sessionID ) = gameSession
+  private def createNewGameSession( sessionID:String, catanModule:CatanModule ):GameSession = {
+    val injector = Guice.createInjector( catanModule )
+    val gameSession = GameSession( new Controller( injector.getInstance( classOf[Game] ), injector.getInstance( classOf[FileIO] ) ) )
+    gameSessions( sessionID ) = gameSession
     gameSession
   }
 

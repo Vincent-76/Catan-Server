@@ -12,7 +12,7 @@ import scala.math.cos
  */
 
 object GameData {
-  def apply( gameSession:GameSession, errors:Map[String, List[String]] ):GameData = new GameData(
+  def apply( gameSession:GameSession, errors:List[FormError] ):GameData = new GameData(
     gameSession.controller.game,
     gameSession.controller.hasUndo,
     gameSession.controller.hasRedo,
@@ -20,7 +20,7 @@ object GameData {
     errors = errors
   )
 
-  def apply( gameSession:GameSession ):GameData = apply( gameSession, Map.empty )
+  def apply( gameSession:GameSession ):GameData = apply( gameSession, Nil )
 }
 
 
@@ -29,7 +29,7 @@ case class GameData( game:Game,
                      hasRedo:Boolean,
                      resourceImages:Map[Resource, List[String]],
                      resourceCounter:mutable.Map[Resource, Int] = mutable.Map(),
-                     errors:Map[String, List[String]] = Map.empty
+                     errors:List[FormError] = Nil
                    ) {
 
   def gameField:GameField = game.gameField
