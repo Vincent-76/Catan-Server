@@ -8,6 +8,10 @@
 @import com.aimit.htwg.catan.util.RichOption
 @* @( game:Game, resourceImages:Map[Resource, List[String]], resourceCounter:mutable.Map[Resource, Int] = mutable.Map() ) *@
 @import model.GameData
+@import com.aimit.htwg.catan.model.state.BuildInitRoadState
+@import com.aimit.htwg.catan.model.state.BuildState
+@import com.aimit.htwg.catan.model.impl.placement.RoadPlacement
+@import com.aimit.htwg.catan.model.impl.placement.RoadPlacement
 @( gameData:GameData )
 
 @fieldWidth = @{ gameData.gameField.fieldWidth }
@@ -94,13 +98,35 @@
 
 
 @road( hex:Hex, offsetIndex:Int, positionClass:String ) = {
-	@defining( gameData.getRoad( hex, offsetIndex ) ) { road =>
-		<div class="road @positionClass @gameData.structureDisplayClass( road )">
-			<div class="placementBorder"></div>
-			<div class="placementContent @gameData.structureColorClass( road )"></div>
-		</div>
+	@defining( gameData.getEdge( hex, offsetIndex ) ) { edge =>
+		@if( edge.isDefined ) {
+			<div class="road @positionClass @gameData.structureDisplayClass( edge.get.road )">
+				<div class="placementBorder"></div>
+				<div class="placementContent @gameData.structureColorClass( edge.get.road )"></div>
+			</div>
+			@roadInteraction( edge.get )
+		}
 	}
 }
+
+
+@roadInteraction( edge:Edge ) = {
+	@gameData.game.state match {
+		case _:BuildInitRoadState => {
+			@roadInteractionView( routes.GameController.saveGame() )
+		}
+		case s:BuildState => {
+			@if( s.structure == RoadPlacement ) {
+				@roadInteractionView( routes.GameController.saveGame() )
+			}
+		}
+	}
+}
+
+@roadInteractionView( call:Call ) = {
+	<a href="@call" class="gridInteraction"></a>
+}
+
 
 @vertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int, positionClass:String ) = {
 	@defining( gameData.getBuilding( hex, offsetIndex1, offsetIndex2 ) ) { building =>

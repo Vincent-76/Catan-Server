@@ -43,6 +43,19 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
     File( CatanModule.savegamePath ).createDirectory().path + File.separator + sessionID
 
 
+  def saveGameSession( session:Session ):Unit = session.get( "sessionID" ).foreach( sessionID =>
+    gameSessions.find( _._1 == sessionID ).foreach( s =>
+      s._2.controller.saveGame( Some( getSaveGamePath( sessionID ) ) )
+    )
+  )
+
+  def loadGameSession( session:Session ):Unit = session.get( "sessionID" ).foreach( sessionID =>
+    getGameSession( session ).foreach( gameSession =>
+      findSaveGamePath( sessionID ).foreach( gameSession.controller.loadGame )
+    )
+  )
+
+
 
   def hasGameSession( session:Session ):Boolean = session.get( "sessionID" ) match {
     case Some( sessionID ) => gameSessions.contains( sessionID ) || hasSaveGame( sessionID )

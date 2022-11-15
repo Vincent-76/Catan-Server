@@ -14,14 +14,38 @@
 	}
 </style>
 
-<div id="playerPanel" class="ropeBorder">
-	<div class="playerHeader">
+<div id="playerPanel" class="ropeBorder row mx-0 p-2">
+	<div id="playerResourceHolder" class="col-lg-6 row mx-0 p-0">
+		<div id="playerNameHolder" class="col-lg p-0 pb-2">
+			<div class="playerPoints @gameData.pBorderColorClass( player.id )">
+				<p>@player.victoryPoints</p>
+			</div>
+			<p class="playerName">@player.name</p>
+		</div>
+		<div class="col-lg row p-0 mx-0">
+			<div class="col p-0">@playerResourceStack( Wood )</div>
+			<div class="col p-0">@playerResourceStack( Clay )</div>
+			<div class="col p-0">@playerResourceStack( Sheep )</div>
+			<div class="col p-0">@playerResourceStack( Wheat )</div>
+			<div class="col p-0">@playerResourceStack( Ore )</div>
+		</div>
+	</div>
+	<div id="playerDevCards" class="col-lg-6 p-0">
+		@for( devCard <- player.devCards ) {
+			<a href="#devCard@devCard.name" class="playerDevCard">@devCard.name</a>
+		}
+	</div>
+
+
+	<div class="playerHeader" style="display: none">
 		<div class="playerPoints @gameData.pBorderColorClass( player.id )">
 			<p>@player.victoryPoints</p>
 		</div>
 		<p class="playerName">@player.name</p>
 	</div>
-	<table>
+
+
+	<table style="display:none">
 		<tr>
 			<td>@playerResourceStack( Wood )</td>
 			<td>@playerResourceStack( Clay )</td>
@@ -33,11 +57,6 @@
 			<td></td>
 		</tr>
 	</table>
-	<div id="playerDevCards">
-		@for( devCard <- player.devCards ) {
-			<a href="#devCard@devCard.name" class="playerDevCard">@devCard.name</a>
-		}
-	</div>
 </div>
 
 @for( devCard <- player.devCards.distinct ) {

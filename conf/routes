@@ -23,6 +23,15 @@ POST	/game/create				controllers.GameController.createGame()
 GET		/game						controllers.GameController.game()
 
 
+GET		/game/save					controllers.GameController.saveGame()
+
+GET		/game/load					controllers.GameController.loadGame()
+
+GET		/game/undo					controllers.GameController.undo()
+
+GET		/game/redo					controllers.GameController.redo()
+
+
 POST 	/game/add_player			controllers.GameController.addPlayer()
 
 GET	/game/init_beginner				controllers.GameController.setInitBeginnerState()

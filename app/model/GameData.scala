@@ -1,6 +1,6 @@
 package model
 
-import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Edge, Game, GameField, Green, Hex, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
 import play.api.data.FormError
 
@@ -70,8 +70,8 @@ case class GameData( game:Game,
     case r:ResourceArea => r.resource.name + " resourceArea landArea"
   }
 
-  def getRoad( hex:Hex, offsetIndex:Int ):Option[Road] =
-    gameField.adjacentEdge( hex, offsetIndex ).flatMap( _.road )
+  def getEdge( hex:Hex, offsetIndex:Int ):Option[Edge] =
+    gameField.adjacentEdge( hex, offsetIndex )
 
   def getBuilding( hex:Hex, offsetIndex1:Int, offsetIndex2:Int ):Option[Building] =
     gameField.adjacentVertex( hex, offsetIndex1, offsetIndex2 ).flatMap( _.building )

@@ -1,43 +1,63 @@
+@cardMargin: 10px;
 
 #playerListPanel {
-  flex-grow: 1;
-  width: 100%;
   background-position: center;
   background-size: 430px;
   background-repeat: repeat;
-  //display: flex;
-  //flex-direction: column;
+  padding: @cardMargin 0 @cardMargin 0;
+  display: flex;
+  flex-direction: column;
 
+  @media (orientation: portrait) {
+    flex-direction: row;
+    padding: 0 @cardMargin 0 @cardMargin;
+  }
 }
 
 .playerCard {
-  @margin: 10px;
-
   flex-grow: 1;
-  margin: @margin @margin @margin@margin;
-  border: solid 0.4vw black;
+  margin: @cardMargin @cardMargin @cardMargin @cardMargin;
+  border: solid 0.3rem black;
   box-sizing: border-box;
   background-position: center;
   background-size: 128px;
   background-repeat: repeat;
-  padding: 2%;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
-  /*&:first-child {
-    margin-top: @margin !important;
+  @media (orientation: portrait) {
+    height: calc( 100% - 2 * @cardMargin )
+  }
+
+  &:first-child {
+    margin-top: 0 !important;
+
+    @media (orientation: portrait) {
+      margin-top: @cardMargin !important;
+      margin-left: 0 !important;
+    }
   }
 
   &:last-child {
-    margin-bottom: @margin !important;
-  }*/
+    margin-bottom: 0 !important;
+
+    @media (orientation: portrait) {
+      bottom: @cardMargin !important;
+      margin-right: 0 !important;
+    }
+  }
 }
 
 .playerCardHeader {
   display: flex;
   align-items: center;
   width: 100%;
+
+  @media (orientation: portrait) {
+
+  }
 }
 
 .playerCardPoints {
@@ -52,10 +72,18 @@
   align-items: center;
   justify-content: center;
 
+  @media (orientation: portrait) {
+    min-height: 20px;
+  }
+
   > p {
     font-weight: bold;
     font-size: 1.2em;
     margin: 0;
+
+    @media (orientation: portrait) {
+      font-size: 1em;
+    }
   }
 }
 
@@ -67,6 +95,10 @@
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (orientation: portrait) {
+    font-size: 1em;
+  }
 }
 
 .playerDisplayInfos {
@@ -81,6 +113,11 @@
   color: white;
   font-size: 1em;
   display: flex;
+  white-space: nowrap;
+
+  @media (orientation: portrait) {
+    font-size: 0.8em;
+  }
 
   > .playerDisplayInfoLabel {
     flex-grow: 1;

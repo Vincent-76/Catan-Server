@@ -1,3 +1,5 @@
+@import '_nav';
+
 @textColor: black;
 @buttonBorderColor: #392F31;
 
@@ -105,18 +107,151 @@ input[type="text"] {
   text-align: center;
 }
 
-.pBGColorGreen { background-color: @pColorGreen }
-.pTextColorGreen { color: @pColorGreen }
-.pBorderColorGreen { border-color: @pColorGreen }
+.pBGColorGreen { background-color: @pColorGreen !important; }
+.pTextColorGreen { color: @pColorGreen !important; }
+.pBorderColorGreen { border-color: @pColorGreen !important; }
 
-.pBGColorBlue { background-color: @pColorBlue }
-.pTextColorBlue { color: @pColorBlue }
-.pBorderColorGreen { border-color: @pColorBlue }
+.pBGColorBlue { background-color: @pColorBlue !important; }
+.pTextColorBlue { color: @pColorBlue !important; }
+.pBorderColorBlue { border-color: @pColorBlue !important; }
 
-.pBGColorYellow { background-color: @pColorYellow }
-.pTextColorYellow { color: @pColorYellow }
-.pBorderColorGreen { border-color: @pColorYellow }
+.pBGColorYellow { background-color: @pColorYellow !important; }
+.pTextColorYellow { color: @pColorYellow !important; }
+.pBorderColorYellow { border-color: @pColorYellow !important; }
 
-.pBGColorRed { background-color: @pColorRed }
-.pTextColorRed { color: @pColorRed }
-.pBorderColorGreen { border-color: @pColorRed }
+.pBGColorRed { background-color: @pColorRed !important; }
+.pTextColorRed { color: @pColorRed !important; }
+.pBorderColorRed { border-color: @pColorRed !important; }
+
+
+@media (orientation: portrait) {
+  *[class^="col-md"] {
+    min-width: 100% !important;
+  }
+
+  *[class~="col-lg-1"] {
+    flex: 0 0 100% / 12;
+    max-width: 100% / 12;
+  }
+
+  *[class~="col-lg-2"] {
+    flex: 0 0 100% / 6;
+    max-width: 100% / 6;
+  }
+
+  *[class~="col-lg-3"] {
+    flex: 0 0 100% / 4;
+    max-width: 100% / 4;
+  }
+
+  *[class~="col-lg-4"] {
+    flex: 0 0 100% / 3;
+    max-width: 100% / 3;
+  }
+
+  *[class~="col-lg-5"] {
+    flex: 0 0 100% / 12 * 5;
+    max-width: 100% / 12 * 5;
+  }
+
+  *[class~="col-lg-6"] {
+    flex: 0 0 100% / 2;
+    max-width: 100% / 2;
+  }
+
+  *[class~="col-lg-7"] {
+    flex: 0 0 100% / 12 * 7;
+    max-width: 100% / 12 * 7;
+  }
+
+  *[class~="col-lg-8"] {
+    flex: 0 0 100% / 12 * 8;
+    max-width: 100% / 12 * 8;
+  }
+
+  *[class~="col-lg-9"] {
+    flex: 0 0 100% / 12 * 9;
+    max-width: 100% / 12 * 9;
+  }
+
+  *[class~="col-lg-10"] {
+    flex: 0 0 100% / 12 * 10;
+    max-width: 100% / 12 * 10;
+  }
+
+  *[class~="col-lg-11"] {
+    flex: 0 0 100% / 12 * 11;
+    max-width: 100% / 12 * 11;
+  }
+
+  *[class~="col-lg-12"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@media (orientation: landscape) {
+  *[class^="col-lg"] {
+    min-width: 100% !important;
+  }
+
+  *[class~="col-md-1"] {
+    flex: 0 0 100% / 12;
+    max-width: 100% / 12;
+  }
+
+  *[class~="col-md-2"] {
+    flex: 0 0 100% / 6;
+    max-width: 100% / 6;
+  }
+
+  *[class~="col-md-3"] {
+    flex: 0 0 100% / 4;
+    max-width: 100% / 4;
+  }
+
+  *[class~="col-md-4"] {
+    flex: 0 0 100% / 3;
+    max-width: 100% / 3;
+  }
+
+  *[class~="col-md-5"] {
+    flex: 0 0 100% / 12 * 5;
+    max-width: 100% / 12 * 5;
+  }
+
+  *[class~="col-md-6"] {
+    flex: 0 0 100% / 2;
+    max-width: 100% / 2;
+  }
+
+  *[class~="col-md-7"] {
+    flex: 0 0 100% / 12 * 7;
+    max-width: 100% / 12 * 7;
+  }
+
+  *[class~="col-md-8"] {
+    flex: 0 0 100% / 12 * 8;
+    max-width: 100% / 12 * 8;
+  }
+
+  *[class~="col-md-9"] {
+    flex: 0 0 100% / 12 * 9;
+    max-width: 100% / 12 * 9;
+  }
+
+  *[class~="col-md-10"] {
+    flex: 0 0 100% / 12 * 10;
+    max-width: 100% / 12 * 10;
+  }
+
+  *[class~="col-md-11"] {
+    flex: 0 0 100% / 12 * 11;
+    max-width: 100% / 12 * 11;
+  }
+
+  *[class~="col-md-12"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}

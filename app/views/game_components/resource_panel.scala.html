@@ -15,26 +15,26 @@
 </style>
 
 
-<div id="resourcePanel" class="ropeBorder">
+<div id="resourcePanel" class="col-lg-3 mx-0 px-2 ropeBorder">
 	<p id="resourceHeader">Game Stacks</p>
-	<table>
-		<tr>
-			<td>@resourceStack( Wood )</td>
-			<td>@resourceStack( Clay )</td>
-			<td>@resourceStack( Sheep )</td>
-		</tr>
-		<tr>
-			<td>@resourceStack( Wheat )</td>
-			<td>@resourceStack( Ore )</td>
-			<td>
-			@gameStack(
-				"images/resources/dev.png",
-				gameData.game.devCards,
-				"Development Card"
-			)
-			</td>
-		</tr>
-	</table>
+	<div id="gameStackHolder">
+		<div class="gameStackRow">
+			<div class="gameStackCell">@resourceStack( Wood )</div>
+			<div class="gameStackCell">@resourceStack( Clay )</div>
+			<div class="gameStackCell">@resourceStack( Sheep )</div>
+		</div>
+		<div class="gameStackRow">
+			<div class="gameStackCell">@resourceStack( Wheat )</div>
+			<div class="gameStackCell">@resourceStack( Ore )</div>
+			<div class="gameStackCell">
+				@gameStack(
+					"images/resources/dev.png",
+					gameData.game.devCards,
+					"Development Card"
+				)
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -48,7 +48,7 @@
 
 @gameStack( path:String, amount:Int, alt:String ) = {
 	<div class="gameStack">
-		<img src="@routes.Assets.versioned( path )" alt="@alt" />
+		<div class="gameStackImg" style="background-image: url( '@routes.Assets.versioned( path )' )"></div>
 		<p>@amount</p>
 	</div>
 }

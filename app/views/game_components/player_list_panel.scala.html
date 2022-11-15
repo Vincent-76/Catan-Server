@@ -12,13 +12,10 @@
 	.playerCard {
 		background-image: url( @routes.Assets.versioned( "images/wood_background.jpg" ) );
 		border-image: url( @routes.Assets.versioned( "images/metal_border.png" ) ) 24 stretch !important;
-		@defining( gameData.game.players.size ) { players =>
-			height: calc( @{ 100 / players }% - @{ ( players + 1 ) * 10 / players }px )
-		}
 	}
 </style>
 
-<div id="playerListPanel">
+<div id="playerListPanel" class="col-lg-9 mx-0">
 	@for( i <- ( 0 until gameData.game.maxPlayers ) ) {
 		@defining( gameData.game.players.find( _._1.id == i ) ) { playerOption =>
 			@if( playerOption.isDefined ) {
@@ -47,7 +44,7 @@
 			</div>
 			<div class="playerDisplayInfo">
 				<div class="playerDisplayInfoLabel">Knights:</div>
-				<div class="playerDisplayInfoValue">@p.devCards.count( c => c == KnightCard )</div>
+				<div class="playerDisplayInfoValue">@p.usedDevCards.count( c => c == KnightCard )</div>
 			</div>
 		</div>
 	</div>

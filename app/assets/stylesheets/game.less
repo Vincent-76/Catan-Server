@@ -4,32 +4,59 @@
 @import "game/_action_panel";
 @import "game/_log_panel";
 
+@portrait: ~"(orientation: portrait)";
+
 #mainPanels {
-  display: flex;
   height: 100%;
 }
 
 #gamePanel {
   //float: left;
   height: 100%;
-  width: 15%;
-  min-width: 100px; // TODO
-  border: 0.75vw solid transparent;
+  //width: 15%;
+  //min-width: 100px; // TODO
+  border: 0.5rem solid transparent;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+
+  @media @portrait {
+    max-height: 15%;
+    flex-direction: row;
+  }
+
+  #resourcePanel {
+    width: 100%;
+    height: 25%;
+
+    @media @portrait {
+      height: 100%;
+    }
+  }
+
+  #playerListPanel {
+    width: 100%;
+    height: 75%;
+
+    @media @portrait {
+      height: 100%;
+    }
+  }
 }
 
 #middlePanel {
-  flex-grow: 1;
+  //flex-grow: 1;
   //width: 70%;
+  height: 100%;
+
+  @media @portrait {
+    height: 70%;
+  }
 
   #gridPanel {
     @margin: 2%;
 
     position: relative;
     //float: left;
-    height: 85%;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -38,10 +65,15 @@
     //background-size: 100% 100%;
     background-size: cover;
     background-position: center;
-    border-top: 1vw solid transparent;
-    //border-bottom: 1vw solid transparent;
+    border-style: solid;
+    border-width: 0.5rem 0 0.5rem 0;
     box-sizing: border-box;
     overflow: hidden;
+
+    @media @portrait {
+      height: 100%;
+      border-width: 0 0.5rem 0 0.5rem;
+    }
 
     > #compass {
       position: absolute;
@@ -58,14 +90,47 @@
       max-height: 100% - 2 * @margin;
     }
   }
+
+  #logPanel {
+    @media @portrait {
+      display: none;
+    }
+  }
 }
 
 #turnPanel {
   height: 100%;
-  width: 15%;
-  min-width: 100px; // TODO
-  border: 0.75vw solid transparent;
+  //width: 15%;
+  //min-width: 100px; // TODO
+  border: 0.5rem solid transparent;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+
+  @media @portrait {
+    max-height: 15%;
+    flex-direction: row;
+  }
+
+  #playerPanel {
+    width: 100%;
+
+    @media @portrait {
+      min-width: 20%;
+      max-width: 50%;
+      width: auto;
+      border-width: 0 0.5rem 0 0;
+      height: 100%;
+    }
+  }
+
+  #actionPanel {
+    flex-grow: 1;
+    width: 100%;
+
+    @media @portrait {
+      width: auto;
+      height: 100%;
+    }
+  }
 }

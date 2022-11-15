@@ -1,0 +1,30 @@
+@import model.GameData
+@( gameData:Option[GameData] = None )( content:Html )
+
+<div id="nav" class="col row mx-0 p-0">
+	<a id="home" class="button navButton" href="@routes.HomeController.index()">
+		<img src="@routes.Assets.versioned( "images/home.png" )" />
+	</a>
+	@if( gameData.isDefined ) {
+		<a id="save" class="button navButton" href="@routes.GameController.saveGame()">
+			<img src="@routes.Assets.versioned( "images/save.png" )" />
+		</a>
+		<a id="load" class="button navButton" href="@routes.GameController.loadGame()">
+			<img src="@routes.Assets.versioned( "images/load.png" )" />
+		</a>
+		<div class="col"></div>
+		@if( gameData.get.hasUndo ) {
+			<a id="undo" class="button navButton" href="@routes.GameController.undo()">
+				<img src="@routes.Assets.versioned( "images/undo.png" )" />
+			</a>
+		}
+		@if( gameData.get.hasRedo ) {
+			<a id="redo" class="button navButton" href="@routes.GameController.redo()">
+				<img src="@routes.Assets.versioned( "images/redo.png" )" />
+			</a>
+		}
+	}
+</div>
+<div id="navContent">
+	@content
+</div>

@@ -72,6 +72,25 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
   }
 
 
+  def saveGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    sessionController.saveGameSession( request.session )
+    Redirect( routes.GameController.game() )
+  }
+
+  def loadGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    sessionController.loadGameSession( request.session )
+    Redirect( routes.GameController.game() )
+  }
+
+  def undo( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    gameAction( _.undoAction() )
+  }
+
+  def redo( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    gameAction( _.redoAction() )
+  }
+
+
   def addPlayer( ):Action[AddPlayer] = formAction( AddPlayer.form, showGameErrors ) { implicit request:Request[AddPlayer] =>
     gameAction( _.action( _.addPlayer( request.body.color, request.body.name ) ) )
   }
