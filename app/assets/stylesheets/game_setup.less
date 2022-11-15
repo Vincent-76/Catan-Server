@@ -1,3 +1,7 @@
+@sm: ~"only screen and (max-width: 576px)";
+@md: ~"only screen and (max-width: 768px)";
+@ropeBorderWidth: 0.75rem;
+@selectedColor: #D09029;
 
 body {
   background-position: center;
@@ -5,6 +9,243 @@ body {
   background-size: cover;
 }
 
-#moduleSelect {
-  outline: 0;
+#gameSetup {
+  height: 100%;
+  margin: auto;
+  padding-top: 4%;
+  padding-bottom: 4%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  > div {
+    background-position: center;
+    background-size: 430px;
+    background-repeat: repeat;
+    border: solid @ropeBorderWidth transparent;
+    box-sizing: border-box;
+  }
+}
+
+.woodenMetal {
+  background-position: center;
+  background-size: 128px;
+  background-repeat: repeat;
+  border: solid 0.4rem transparent;
+  box-sizing: border-box;
+}
+
+#gameSettings {
+    width: 100%;
+
+  .selectLabel {
+    color: @selectedColor;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  #moduleSelect {
+    text-align: center;
+
+    select {
+      width: 100%;
+    }
+  }
+
+  #placementSelect {
+
+    .placement {
+      display: flex;
+    }
+
+    input {
+      border-radius: 5px;
+    }
+
+    label {
+      color: white;
+      flex-grow: 1;
+      margin-bottom: 0;
+      padding: 6px;
+    }
+  }
+
+  #fileIOSelect {
+    text-align: center;
+
+    select {
+      width: 100%;
+    }
+  }
+
+  #createGame {
+    margin-top: 20px;
+
+    .button {
+      width: 100%;
+    }
+  }
+}
+
+
+#initPlayer {
+
+  #playerList {
+    text-align: center;
+
+    #playersLabel {
+      color: white;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+
+    .playerListName {
+      text-align: left;
+      color: white;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .playerListColor {
+      height: 2rem;
+      aspect-ratio: 1;
+      border: solid 2px black;
+    }
+  }
+
+  #addPlayer {
+    text-align: center;
+  }
+
+  form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #addPlayerLabel {
+    color: @selectedColor;
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+
+  #playerName {
+    text-align: left;
+    justify-content: center;
+
+    > label {
+      color: @selectedColor;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+
+      @media @sm {
+        & {
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  #playerColor {
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+
+    > label {
+      color: @selectedColor;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .col {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input {
+      min-width: 50px;
+      margin: auto;
+      aspect-ratio: 1;
+      appearance: none;
+      border: solid 2px black;
+      box-sizing: border-box;
+      transition: 200ms;
+
+      &:checked {
+        border-color: @selectedColor;
+        border-width: 5px;
+      }
+    }
+  }
+
+  #sendAddPlayer {
+    margin-top: 20px;
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  #playerList {
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 0 0 0 @ropeBorderWidth;
+
+    @media @md {
+      border-width: @ropeBorderWidth 0 0 0;
+    }
+  }
+}
+
+#beginnerList {
+  text-align: center;
+
+  #beginnersLabel {
+    color: white;
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+
+  .beginnerListName {
+    text-align: left;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .beginnerListColor {
+    height: 2rem;
+    aspect-ratio: 1;
+    border: solid 2px black;
+  }
+
+  .beginnerDiceValue {
+    height: 2.5rem;
+    aspect-ratio: 1;
+    border: solid 3px black;
+    border-radius: 8px;
+    background-color: black;
+    box-sizing: border-box;
+  }
+
+  .beginner {
+    border-color: @selectedColor;
+    background-color: @selectedColor;
+  }
+
+  #diceOutButton {
+    width: fit-content;
+    width: -moz-fit-content;
+    margin: auto;
+
+    > img {
+      height: 40px;
+    }
+  }
 }

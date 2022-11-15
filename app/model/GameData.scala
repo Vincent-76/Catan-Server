@@ -1,6 +1,6 @@
 package model
 
-import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Game, GameField, Green, Hex, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
 import play.api.data.FormError
 
@@ -81,17 +81,36 @@ case class GameData( game:Game,
     case None => "structureNotBuilt"
   }
 
-  def structureColor( structure:Option[Structure] ):String = structure match {
-    case Some( s ) => playerColor( s.owner )
+  def structureColorClass( structure:Option[Structure] ):String = structure match {
+    case Some( s ) => pBGColorClass( s.owner )
     case None => "transparent"
   }
 
+  def pBGColorClass( pID:PlayerID ):String = pBGColorClass( game.player( pID ).color )
 
-  def playerColor( pID:PlayerID ):String = game.player( pID ).color match {
-    case Green => "green"
-    case Blue => "blue"
-    case Yellow => "yellow"
-    case Red => "red"
+  def pBGColorClass( color:PlayerColor ):String = color match {
+    case Green => "pBGColorGreen"
+    case Blue => "pBGColorBlue"
+    case Yellow => "pBGColorYellow"
+    case Red => "pBGColorRed"
+  }
+
+  def pTextColorClass( pID:PlayerID ):String = pTextColorClass( game.player( pID ).color )
+
+  def pTextColorClass( color:PlayerColor ):String = color match {
+    case Green => "pTextColorGreen"
+    case Blue => "pTextColorBlue"
+    case Yellow => "pTextColorYellow"
+    case Red => "pTextColorRed"
+  }
+
+  def pBorderColorClass( pID:PlayerID ):String = pBorderColorClass( game.player( pID ).color )
+
+  def pBorderColorClass( color:PlayerColor ):String = color match {
+    case Green => "pBorderColorGreen"
+    case Blue => "pBorderColorBlue"
+    case Yellow => "pBorderColorYellow"
+    case Red => "pBorderColorRed"
   }
 
   def buildingClass( building:Option[Building] ):String = building match {

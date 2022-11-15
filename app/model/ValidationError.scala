@@ -17,4 +17,6 @@ object ValidationError extends Enumeration {
 
   val Required:E = E( 0, "error.required", "Required!" )
   val Empty:E = E( 1, "empty", "Can't be nothing!" )
+  val Invalid:E = E( 2, "invalid", "Invalid input!" )
+  val TooLong:E = E( 3, "tooLong", "Input too long!" )
 }

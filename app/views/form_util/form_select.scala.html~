@@ -1,0 +1,12 @@
+
+@( field:Field, options:Seq[(String, String)], id:String = "", classes:String = "" )( implicit messages:Messages )
+
+<div>
+@views.html.helper.select( field = field, options = options, Symbol( "_label" ) -> "" ) { implicit data =>
+  <select id="@id" class="@classes" name="@data.name">
+	  @for( o <- options ) {
+		  <option value="@o._1">@o._2</option>
+	  }
+  </select>
+}
+</div>

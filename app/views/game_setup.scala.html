@@ -2,10 +2,17 @@
 @import views.html.helper.form
 @import model.form.NewGame
 @import views.html.helper.select
+@import views.html.helper.checkbox
 @import com.aimit.htwg.catan.CatanModule
 @import model.ValidationError
+@import com.aimit.htwg.catan.model.FileIO
+@import com.aimit.htwg.catan.model.Placement
+@import views.html.view_util.error_info
+@import model.form.AddPlayer
+@import com.aimit.htwg.catan.model.PlayerColor
+@import com.aimit.htwg.catan.model.state.InitPlayerState
+@import com.aimit.htwg.catan.model.state.InitBeginnerState
 @( gameData:Option[GameData] = None, errors:Map[String, List[String]] = Map.empty )( implicit messages:Messages )
-
 
 @main( stylesheets = List( "game_setup.css" ) ) {
 
@@ -13,24 +20,153 @@
 		body {
 			background-image: url( @routes.Assets.versioned( "images/main_theme.jpg" ) );
 		}
+
+		#gameSetup > div {
+			background-image: url( @routes.Assets.versioned( "images/stone_background.jpg" ) );
+		}
+
+		.woodenMetal {
+			background-image: url( @routes.Assets.versioned( "images/wood_background.jpg" ) );
+			border-image: url( @routes.Assets.versioned( "images/metal_border.png" ) ) 24 stretch !important;
+		}
 	</style>
-
-	@form( action = routes.GameController.createGame(), Symbol( "method" ) -> "POST" ) {
-		@select(
-			field = NewGame.form( "module" ),
-			options = CatanModule.impls.map( impl => (impl.name -> impl.name) ).toSeq,
-			Symbol( "id" ) -> "moduleSelect",
-			Symbol( "class" ) -> "button"
-		)
-		<br />
-		<form_input type="submit" value="->" />
-	}
-
-	@for( err <- errors ) {
-		<p>@err._1:@err._2.map( ValidationError.msg ).mkString( "," )</p>
-	}
-
-	@if( gameData.isDefined ) {
-		<div>@gameData.get.game.seed</div>
+	@if( gameData.isEmpty ) {
+		<div id="gameSetup" class="col-md-8">
+			<div class="ropeBorder">
+				@form( action = routes.GameController.createGame(), Symbol( "method" ) -> "POST", Symbol( "id" ) -> "gameSettings" ) {
+					<div class="row m-0">
+						<div id="moduleSelect" class="col-sm-4 my-2">
+							<label class="selectLabel">Game Mode</label>
+							<select class="select" name="@{NewGame.form( "module" ).name}">
+								@for( module <- CatanModule.impls ) {
+									<option value="@module.name">@module.name</option>
+								}
+							</select>
+							@error_info( NewGame.form( "module" ), errors )
+						</div>
+						<div id="placementSelect" class="col-sm-4 my-2">
+							<div class="row mx-0 woodenMetal">
+								@for( placement <- Placement.impls ) {
+									<div class="col-xl-6 placement">
+										<input id="@placement.name" type="checkbox" class="checkbox"
+											name="@{NewGame.form( "availablePlacements" ).name}[]" value="@placement.name"
+											@{if( gameData.isEmpty || gameData.exists( _.game.availablePlacements.exists( _.name == placement.name ) ) ) "checked"} />
+										<label for="@placement.name">@placement.name</label>
+									</div>
+								}
+								@error_info( NewGame.form( "availablePlacements" ), errors )
+							</div>
+						</div>
+						<div id="fileIOSelect" class="col-sm-4 my-2">
+							<label class="selectLabel">Save Game Method</label>
+							<select class="select" name="@{NewGame.form( "fileIO" ).name}">
+								@for( fileIO <- FileIO.impls ) {
+									<option value="@fileIO.name" selected>@fileIO.name</option>
+								}
+							</select>
+							@error_info( NewGame.form( "fileIO" ), errors )
+						</div>
+					</div>
+					<div id=createGame class="row mx-0">
+						<div class="col-md-12 my-2">
+							<input type="submit" value="Create Game" class="button" />
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	} else {
+		@gameData.get.game.state match {
+			case _:InitPlayerState => {
+				<div id="gameSetup" class="col-md-8">
+					<div class="ropeBorder">
+						<div id="initPlayer" class="row mx-0">
+							<div id="addPlayer" class="col-md-7 my-2">
+								@form( action = routes.GameController.addPlayer(), Symbol( "method" ) -> "POST" ) {
+									<label id="addPlayerLabel" class="mb-3">Add Player</label>
+									<div id="playerName" class="row mx-0">
+										<label>Name:</label>
+										<div class="col-sm pr-0">
+											<input type="text" name="@{AddPlayer.form( "name" ).name}" />
+										</div>
+									</div>
+									@error_info( AddPlayer.form( "name" ), errors )
+									<div id="playerColor" class="row mx-0">
+										<label>Color:</label>
+										<div class="col-sm row mx-0 pr-0">
+											@defining(
+												PlayerColor.availableColors( gameData.get.game.players.map( _._2.color ) )
+											) { colors =>
+												@for( i <- colors.indices ) {
+													<div class="col my-2">
+														<input type="radio" class="@gameData.get.pBGColorClass( colors( i ) )"
+															name="@{AddPlayer.form( "color" ).name}" value="@colors( i ).name"
+															@{if( i == 0 ) "checked" } />
+													</div>
+												}
+											}
+										</div>
+									</div>
+									@error_info( AddPlayer.form( "color" ), errors )
+									<div id="sendAddPlayer" class="row mx-0 my-2">
+										<input type="submit" value="Add Player" class="col-sm button" />
+										@if( gameData.get.game.players.size >= gameData.get.game.minPlayers ) {
+											<a class="col-sm button" href="@routes.GameController.setInitBeginnerState()">Next</a>
+										}
+									</div>
+								}
+							</div>
+							<div id="playerList" class="col-md-5 ropeBorder">
+								<label id="playersLabel" class="mb-1">Players</label>
+								@for( p <- gameData.get.game.players ) {
+									<div class="col-12 row mx-0 my-2 woodenMetal align-items-center">
+										<div class="col my-2 px-0 playerListName">
+											<label>@p._2.name</label>
+										</div>
+										<div class="playerListColor @gameData.get.pBGColorClass( p._1 )"></div>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+			case state:InitBeginnerState => {
+				<div id="gameSetup" class="col-md-4">
+					<div class="ropeBorder">
+						<div id="beginnerList" class="col-md-12 ropeBorder">
+							<label id="beginnersLabel" class="mb-1">Dice out beginner</label>
+							@defining(
+								if( state.diceValues.isEmpty )
+									gameData.get.game.players.map( d => (d._1, None) )
+								else
+									state.diceValues.map( d => (d._1, Some( d._2 )) )
+							) { dicePlayers =>
+								@for( diceValue <- dicePlayers ) {
+									<div class="col-12 row mx-0 my-2 woodenMetal align-items-center">
+										<div class="beginnerListColor mr-2 @gameData.get.pBGColorClass( diceValue._1 )"></div>
+										<div class="col my-2 px-0 beginnerListName">
+											<label>@gameData.get.game.player( diceValue._1 ).name</label>
+										</div>
+										@if( diceValue._2.isDefined ) {
+											<img class="beginnerDiceValue @{if( state.beginner.contains( diceValue._1 ) ) "beginner"}"
+												src="@routes.Assets.versioned( s"images/dice/${diceValue._2.get}.png" )"
+												alt="@diceValue._2.get" />
+										}
+									</div>
+								}
+							}
+							@if( state.beginner.isEmpty ) {
+								<a id="diceOutButton" class="col my-2 button" href="@routes.GameController.diceOutBeginner()">
+									<img src="@routes.Assets.versioned( "images/dices.png" )" alt="Roll the dices"/>
+								</a>
+							} else {
+								<a id="startButton" class="col my-2 button" href="@routes.GameController.setBeginner()">Start</a>
+							}
+						</div>
+					</div>
+				</div>
+			}
+		}
 	}
 }

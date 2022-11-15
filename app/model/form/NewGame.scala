@@ -9,12 +9,13 @@ import play.api.data.Forms.{ mapping, set }
 /**
  * @author Vincent76
  */
+
 case class NewGame( module:CatanModuleImpl, fileIO:FileIO, availablePlacements:Set[Placement] )
 
 object NewGame extends InputForm {
   val form:Form[NewGame] = Form( mapping(
     "module" -> CatanModule.mapping,
     "fileIO" -> FileIO.mapping,
-    "placement" -> set[Placement]( Placement.mapping ).nonEmpty
+    "availablePlacements" -> set( Placement.mapping ).nonEmpty
   )( NewGame.apply )( NewGame.unapply ) )
 }

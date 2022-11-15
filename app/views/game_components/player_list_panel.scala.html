@@ -31,7 +31,7 @@
 @playerDisplay( p:Player ) = {
 	<div class="playerCard">
 		<div class="playerCardHeader">
-			<div class="playerCardPoints" style="border-color: @gameData.playerColor( p.id )">
+			<div class="playerCardPoints @gameData.pBorderColorClass( p.id )">
 				<p>@gameData.game.getPlayerDisplayVictoryPoints( p.id )</p>
 			</div>
 			<p class="playerCardName">@p.name</p>

@@ -1,6 +1,11 @@
 @textColor: black;
 @buttonBorderColor: #392F31;
 
+@pColorGreen: #12ba00;
+@pColorBlue: #007cba;
+@pColorYellow: #cdd310;
+@pColorRed: #d21414;
+
 * {
   user-select: none;
 }
@@ -34,8 +39,84 @@ body {
 
 .button:hover {
   box-shadow: inset 0 0 3px @buttonBorderColor;
+  color: initial !important;
+  text-decoration: initial !important;
 }
 
 .button:active {
   box-shadow: inset 0 0 5px @buttonBorderColor;
 }
+
+
+.select {
+  background-image: linear-gradient( #F9D031, #A65020 );
+  display: block;
+  border: 3px solid @buttonBorderColor;
+  border-radius: 8px;
+  text-align: center;
+  padding: 6px 12px 6px 12px;
+  text-decoration: none;
+  color: @textColor;
+  font-size: 1.2em;
+  font-weight: bold;
+  //cursor: inherit;
+  outline: 0;
+  transition: box-shadow 0.1s ease-in-out;
+}
+
+.select:hover {
+  box-shadow: inset 0 0 3px @buttonBorderColor;
+}
+
+.select:active {
+  box-shadow: inset 0 0 5px @buttonBorderColor;
+}
+
+label {
+  -webkit-text-stroke: 0.5px black;
+  text-overflow: ellipsis;
+  margin-bottom: 0 !important;
+}
+
+input[type="text"] {
+  background-color: #C0A78B;
+  border: solid 0.2rem black;
+  border-radius: 5px;
+  outline: none;
+
+  &:focus {
+    border-color: #D09029;
+  }
+}
+
+.errorInfo {
+  width: 100%;
+  color: #bc0000;
+  font-size: 1.1em;
+  font-weight: bold;
+  -webkit-text-stroke: 0.4px black;
+
+  > p {
+    margin-bottom: 0;
+  }
+}
+
+.centerText {
+  text-align: center;
+}
+
+.pBGColorGreen { background-color: @pColorGreen }
+.pTextColorGreen { color: @pColorGreen }
+.pBorderColorGreen { border-color: @pColorGreen }
+
+.pBGColorBlue { background-color: @pColorBlue }
+.pTextColorBlue { color: @pColorBlue }
+.pBorderColorGreen { border-color: @pColorBlue }
+
+.pBGColorYellow { background-color: @pColorYellow }
+.pTextColorYellow { color: @pColorYellow }
+.pBorderColorGreen { border-color: @pColorYellow }
+
+.pBGColorRed { background-color: @pColorRed }
+.pTextColorRed { color: @pColorRed }
+.pBorderColorGreen { border-color: @pColorRed }

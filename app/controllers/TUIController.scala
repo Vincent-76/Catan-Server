@@ -18,9 +18,9 @@ import scala.util.{ Failure, Success }
 class TUIController @Inject()( val sessionController:SessionController, val controllerComponents:ControllerComponents, val messagesAPI:MessagesApi ) extends BaseController with I18nSupport {
 
   private def getOrCreateGameSession( requestSession:Session ):(Session, GameSession) = {
-    val (session, gameSession) = sessionController.getGameSession( requestSession )
+    val gameSession = sessionController.getGameSession( requestSession )
     if( gameSession.isDefined )
-      (session, gameSession.get)
+      (requestSession, gameSession.get)
     else
       sessionController.newGameSession( requestSession, ClassicCatanModule.instance() )
   }

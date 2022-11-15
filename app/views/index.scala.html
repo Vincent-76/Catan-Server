@@ -7,15 +7,19 @@
     }
   </style>
 
-  <div id="content">
+  <div id="content" class="col-md-5">
     <img id="header" src="@routes.Assets.versioned( "images/main_header.png" )" alt="Settlers of Catan" />
-    <div id="buttons">
+    <div id="buttons" class="col-md-6">
       @if( gameSessionExists ) {
-        <a href="@routes.GameController.game()" class="button">Resume Game</a>
-        <a href="@routes.TUIController.game()" class="button">Resume Game (TUI)</a>
+        <div>
+          <a href="@routes.GameController.game()" class="button">Resume Game</a>
+          <a href="@routes.TUIController.game()" class="button">Resume Game (TUI)</a>
+        </div>
       }
-      <a href="@routes.GameController.newGame()" class="button">Start New Game</a>
-      <a href="@routes.TUIController.newGame()" class="button">Start New Game (TUI)</a>
+      <div>
+        <a href="@routes.GameController.newGame()" class="button">Start New Game</a>
+        <a href="@routes.TUIController.newGame()" class="button">Start New Game (TUI)</a>
+      </div>
       <a target="_blank" href="/rules" class="button">Open Rules</a>
     </div>
   </div>

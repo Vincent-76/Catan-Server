@@ -56,6 +56,20 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
     case None =>
   }
 
+  def getGameSession( session:Session ):Option[GameSession] = session.get( "sessionID" ).flatMap( sessionID => {
+    gameSessions.get( sessionID ) match {
+      case Some( gameSession ) =>
+        gameSessions( sessionID ) = gameSession.update()
+        Some( gameSession )
+      case None => findSaveGamePath( sessionID ).map( path => {
+        val loaded = FileIO.load( path )
+        val gameSession = GameSession( new Controller( loaded._2._1, loaded._1, new UndoManager( loaded._2._2, loaded._2._3 ) ) )
+        gameSessions( sessionID ) = gameSession
+        gameSession
+      } );
+    }
+  } )
+
   def newGameSession( session:Session, catanModule:CatanModule ):(Session, GameSession) = session.get( "sessionID" ) match {
     case Some( sessionID ) =>
       deleteSaveGame( sessionID )
@@ -65,60 +79,32 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
       (session + ("sessionID" -> sessionID), createNewGameSession( sessionID, catanModule ))
   }
 
-  def getGameSession( session:Session ):(Session, Option[GameSession]) = session.get( "sessionID" ) match {
-    case Some( sessionID ) => (session, getGameSession( sessionID ))
-    case None =>
-      val sessionID = java.util.UUID.randomUUID().toString
-      (session + ("sessionID" -> sessionID), getGameSession( sessionID ))
-  }
-
-  private def getGameSession( sessionID:String ):Option[GameSession] = gameSessions.get( sessionID ) match {
-    case Some( gameSession ) =>
-      gameSessions( sessionID ) = gameSession.update()
-      Some( gameSession )
-    case None => findSaveGamePath( sessionID ).map( path => {
-      val loaded = FileIO.load( path )
-      GameSession( new Controller( loaded._2._1, loaded._1, new UndoManager( loaded._2._2, loaded._2._3 ) ) )
-    } );
-  }
-
   private def createNewGameSession( sessionID:String, catanModule:CatanModule ):GameSession = {
     val injector = Guice.createInjector( catanModule )
-    val gameSession = GameSession( new Controller( injector.getInstance( classOf[Game] ), injector.getInstance( classOf[FileIO] ) ) )
+    val newGame = injector.getInstance( classOf[Game] )
+    val game = newGame.state.initGame().flatMap( _.doStep( newGame ).toOption.map( _._1 ) ).get
+    val gameSession = GameSession( new Controller( game, injector.getInstance( classOf[FileIO] ) ) )
     gameSessions( sessionID ) = gameSession
     gameSession
   }
 
-  private def hasSaveGame( sessionID:String ):Boolean = {
+  private def findSaveGames[R]( sessionID:String, f: List[java.io.File] => R ):Option[R] = {
     val dir = new java.io.File( CatanModule.savegamePath )
     if( dir.exists && dir.isDirectory ) {
       try {
-        dir.listFiles.exists( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) )
-      } catch {
-        case _:java.lang.SecurityException => false
-      }
-    } else false
-  }
-
-  private def findSaveGamePath( sessionID:String ):Option[String] = {
-    val dir = new java.io.File( CatanModule.savegamePath )
-    if( dir.exists && dir.isDirectory ) {
-      try {
-        dir.listFiles.find( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) ).map( _.getAbsolutePath )
+        Some( f( dir.listFiles.filter( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) ).toList ) )
       } catch {
         case _:java.lang.SecurityException => None
       }
     } else None
   }
 
-  private def deleteSaveGame( sessionID:String ):Unit = {
-    val dir = new java.io.File( CatanModule.savegamePath )
-    if( dir.exists && dir.isDirectory ) {
-      try {
-        dir.listFiles.find( f => f.isFile && f.getName.matches( s"$sessionID\\..*" ) ).foreach( _.delete() )
-      } catch {
-        case _:java.lang.SecurityException => None
-      }
-    }
-  }
+  private def hasSaveGame( sessionID:String ):Boolean =
+    findSaveGames( sessionID, _.nonEmpty ).getOrElse( false )
+
+  private def findSaveGamePath( sessionID:String ):Option[String] =
+    findSaveGames( sessionID, _.headOption.map( _.getAbsolutePath ) ).flatten
+
+  private def deleteSaveGame( sessionID:String ):Unit =
+    findSaveGames( sessionID, _.foreach( _.delete() ) )
 }

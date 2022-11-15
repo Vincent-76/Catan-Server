@@ -97,7 +97,7 @@
 	@defining( gameData.getRoad( hex, offsetIndex ) ) { road =>
 		<div class="road @positionClass @gameData.structureDisplayClass( road )">
 			<div class="placementBorder"></div>
-			<div class="placementContent" style="background-color: @gameData.structureColor( road )"></div>
+			<div class="placementContent @gameData.structureColorClass( road )"></div>
 		</div>
 	}
 }
@@ -106,7 +106,7 @@
 	@defining( gameData.getBuilding( hex, offsetIndex1, offsetIndex2 ) ) { building =>
 		  <div class="vertex @positionClass @gameData.structureDisplayClass( building ) @gameData.buildingClass( building )">
 			  <div class="placementBorder"></div>
-			  <div class="placementContent" style="background-color: @gameData.structureColor( building )"></div>
+			  <div class="placementContent @gameData.structureColorClass( building )"></div>
 		  </div>
 	}
 }

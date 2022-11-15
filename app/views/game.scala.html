@@ -11,10 +11,6 @@
 @main( stylesheets = List( "game.css", "grid.css" ) ) {
 
 	<style>
-			.ropeBorder {
-				border-image: url( @routes.Assets.versioned( "images/rope_border.png" ) ) 205 round !important;
-			}
-
 			#gridPanel {
 				background-image: url( @routes.Assets.versioned( "images/map_background.png" ) );
 				border-image: url( @routes.Assets.versioned( "images/map_border.png" ) ) 11 round !important;
@@ -22,18 +18,18 @@
 	</style>
 
 	<div id="mainPanels">
-		<div id="gamePanel" class="ropeBorder">
+		<div id="gamePanel" class="col-md-2 p-0 ropeBorder">
 			@resource_panel( gameData )
 			@player_list_panel( gameData )
 		</div>
-		<div id="middlePanel">
+		<div id="middlePanel" class="col-md-8 p-0">
 			<div id="gridPanel">
 				<img id="compass" src="@routes.Assets.versioned( "images/compass_2.png" )" alt="" />
 				<div>@grid( gameData )</div>
 			</div>
 			@log_panel( gameData )
 		</div>
-		<div id="turnPanel" class="ropeBorder">
+		<div id="turnPanel" class="col-md-2 p-0 ropeBorder">
 			@player_panel( gameData, gameData.game.player( gameData.game.onTurn ) )
 			@action_panel( gameData )
 		</div>

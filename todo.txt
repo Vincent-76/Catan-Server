@@ -7,6 +7,10 @@
 - Game
 	- Save/Load/Undo/Redo buttons in logpanel
 
+- label around input
+
+- MenuBar
+
 - Largest Army / Longest Road
 
 - better compass
