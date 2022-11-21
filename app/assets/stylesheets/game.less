@@ -43,6 +43,7 @@
 }
 
 #middlePanel {
+  position: relative;
   //flex-grow: 1;
   //width: 70%;
   height: 100%;
@@ -132,5 +133,94 @@
       width: auto;
       height: 100%;
     }
+  }
+}
+
+
+.navButton2 {
+  position: absolute;
+  aspect-ratio: 1;
+  width: 5%;
+  min-width: 50px;
+  max-width: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.8rem;
+  z-index: 1;
+  margin: 0.5rem 0 0.5rem 0;
+
+  @media @portrait {
+    margin: 0 0.5rem 0 0.5rem;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+#homeButton {
+  top: 0;
+  left: 0;
+  transform: translate( 10%, 10% );
+}
+
+#saveButton {
+  bottom: 0;
+  left: 0;
+  transform: translate( 10%, -120% );
+}
+
+#loadButton {
+  bottom: 0;
+  left: 0;
+  transform: translate( 10%, -10% );
+}
+
+#undoButton {
+  top: 0;
+  right: 0;
+  transform: translate( -10%, 10% );
+}
+
+#redoButton {
+  top: 0;
+  right: 0;
+  transform: translate( -10%, 120% );
+}
+
+
+
+#gameInfoToggle {
+  display: none;
+
+  &:not(:checked) ~ #gameInfo {
+    display: none;
+  }
+}
+
+#gameInfo {
+  > div {
+    //width: 30%;
+    padding: 1rem;
+    border: solid 0.4rem black;
+    border-radius: 1rem;
+    background-color: #D09029;
+
+    @media (orientation: portrait) {
+      width: auto;
+      height: 40%;
+    }
+  }
+}
+
+
+#diceInfo {
+  img {
+    width: 4%;
+    margin: 5px;
+    background-color: black;
+    border: solid 0.3rem black;
+    border-radius: 10px;
   }
 }

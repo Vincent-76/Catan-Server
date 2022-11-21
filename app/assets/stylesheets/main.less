@@ -107,6 +107,31 @@ input[type="text"] {
   text-align: center;
 }
 
+.dialogDisplay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background-color: rgba( 0, 0, 0, 0.6 );
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  display: flex;
+  z-index: 100;
+}
+
+.dialog {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+
+  &:target {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
 .pBGColorGreen { background-color: @pColorGreen !important; }
 .pTextColorGreen { color: @pColorGreen !important; }
 .pBorderColorGreen { border-color: @pColorGreen !important; }

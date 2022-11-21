@@ -32,7 +32,7 @@
 	</div>
 	<div id="playerDevCards" class="col-lg-6 p-0">
 		@for( devCard <- player.devCards ) {
-			<a href="#devCard@devCard.name" class="playerDevCard">@devCard.name</a>
+			<label for="devCard@{devCard.name}Control" class="playerDevCard">@devCard.name</label>
 		}
 	</div>
 
@@ -60,9 +60,10 @@
 </div>
 
 @for( devCard <- player.devCards.distinct ) {
-	<a href="#" id="devCard@devCard.name" class="devCardDialog">
+	<input type="checkbox" id="devCard@{devCard.name}Control" class="devCardDialogControl" />
+	<label for="devCard@{devCard.name}Control" id="devCard@devCard.name" class="devCardDialog dialogDisplay">
 		<img src="@routes.Assets.versioned( s"images/devCards/${devCard.name.toLowerCase}.png" )" alt="@devCard.name">
-	</a>
+	</label>
 }
 
 @playerResourceStack( r:Resource ) = {

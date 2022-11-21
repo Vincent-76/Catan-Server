@@ -5,34 +5,78 @@
 @import views.html.game_components.log_panel
 @import views.html.game_components.player_panel
 @import views.html.game_components.action_panel
-@( gameData:GameData )
+@import com.aimit.htwg.catan.model.Info
+@import views.html.infos.dice_info
+@import com.aimit.htwg.catan.model.DiceInfo
+@import views.html.infos.gather_info
+@import com.aimit.htwg.catan.model.GatherInfo
+@( gameData:GameData, info:Option[Info], errors:Map[String, List[String]] = Map.empty )
 
 
 @main( stylesheets = List( "game.css", "grid.css" ) ) {
-	@nav( Some( gameData ) ) {
-		<style>
-				#gridPanel {
-					background-image: url( @routes.Assets.versioned( "images/map_background.png" ) );
-					border-image: url( @routes.Assets.versioned( "images/map_border.png" ) ) 11 round !important;
-				}
-		</style>
 
-		<div id="mainPanels" class="row mx-0">
-			<div id="gamePanel" class="col-md-2 row mx-0 p-0 ropeBorder">
-				@resource_panel( gameData )
-				@player_list_panel( gameData )
-			</div>
-			<div id="middlePanel" class="col-md-8 p-0">
-				<div id="gridPanel">
-					<img id="compass" src="@routes.Assets.versioned( "images/compass_2.png" )" alt="" />
-					<div>@grid( gameData )</div>
-				</div>
-				@* @log_panel( gameData ) *@
-			</div>
-			<div id="turnPanel" class="col-md-2 row mx-0 p-0 ropeBorder">
-				@player_panel( gameData, gameData.game.player( gameData.game.onTurn ) )
-				@action_panel( gameData )
-			</div>
+	<style>
+			#gridPanel {
+				background-image: url( @routes.Assets.versioned( "images/map_background.png" ) );
+				border-image: url( @routes.Assets.versioned( "images/map_border.png" ) ) 11 round !important;
+			}
+	</style>
+
+	<div id="mainPanels" class="row mx-0">
+		<div id="gamePanel" class="col-md-2 row mx-0 p-0 ropeBorder">
+			@resource_panel( gameData )
+			@player_list_panel( gameData )
 		</div>
+		<div id="middlePanel" class="col-md-8 p-0">
+			<a id="homeButton" class="button navButton2" href="@routes.HomeController.index()">
+				<img src="@routes.Assets.versioned( "images/home.png" )" alt="Home" />
+			</a>
+			<a id="saveButton" class="button navButton2" href="@routes.GameController.saveGame()">
+				<img src="@routes.Assets.versioned( "images/save.png" )" alt="Save" />
+			</a>
+			<a id="loadButton" class="button navButton2" href="@routes.GameController.loadGame()">
+				<img src="@routes.Assets.versioned( "images/load.png" )" alt="Load" />
+			</a>
+			@if( gameData.hasUndo ) {
+				<a id="undoButton" class="button navButton2" href="@routes.GameController.undo()">
+					<img src="@routes.Assets.versioned( "images/undo.png" )" alt="Undo" />
+				</a>
+			}
+			@if( gameData.hasRedo ) {
+				<a id="redoButton" class="button navButton2" href="@routes.GameController.redo()">
+					<img src="@routes.Assets.versioned( "images/redo.png" )" alt="Redo" />
+				</a>
+			}
+			<div id="gridPanel">
+				<img id="compass" src="@routes.Assets.versioned( "images/compass_2.png" )" alt="" />
+				<div>@grid( gameData )</div>
+			</div>
+			@* @log_panel( gameData ) *@
+		</div>
+		<div id="turnPanel" class="col-md-2 row mx-0 p-0 ropeBorder">
+			@player_panel( gameData, gameData.game.player( gameData.game.onTurn ) )
+			@action_panel( gameData )
+		</div>
+	</div>
+
+
+	@if( info.isDefined ) {
+		<input type="checkbox" id="gameInfoToggle" checked/>
+		<label for="gameInfoToggle" id="gameInfo" class="dialogDisplay">
+			<div>
+				@info.get match {
+					case i:DiceInfo => {
+						@dice_info( i )
+					}
+					case i:GatherInfo => {
+						@gather_info( i )
+					}
+					case i => {
+						<p>@i.toString</p>
+					}
+				}
+			</div>
+		</label>
 	}
+
 }

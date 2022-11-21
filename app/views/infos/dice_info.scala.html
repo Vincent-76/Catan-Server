@@ -1,0 +1,8 @@
+@import com.aimit.htwg.catan.model.DiceInfo
+@( diceInfo:DiceInfo )
+
+
+<div id="diceInfo">
+	<img src="@routes.Assets.versioned( "images/dice/" + diceInfo.dices._1 + ".png" )" alt="@diceInfo.dices._1" />
+	<img src="@routes.Assets.versioned( "images/dice/" + diceInfo.dices._2 + ".png" )" alt="@diceInfo.dices._2" />
+</div>

@@ -1,4 +1,5 @@
 @import model.GameData
+@import com.aimit.htwg.catan.model.state.DiceState
 @( gameData:GameData )
 
 
@@ -10,5 +11,16 @@
 
 
 <div id="actionPanel" class="px-2 ropeBorder">
-
+	@gameData.game.state match {
+		case _:DiceState => {
+			@actionButton( "Roll the Dices", routes.GameController.rollTheDices() )
+		}
+		case s => {
+			<p style="color: white">@s.getClass.getSimpleName</p>
+		}
+	}
 </div>
+
+@actionButton( name:String, call:Call ) = {
+	<a href="@call" class="button">@name</a>
+}

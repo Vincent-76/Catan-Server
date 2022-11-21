@@ -1,6 +1,8 @@
 package model
 
-import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Edge, Game, GameField, Green, Hex, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.impl.placement.{ RoadPlacement, SettlementPlacement }
+import com.aimit.htwg.catan.model.state.{ BuildInitRoadState, BuildInitSettlementState, BuildState, DevRoadBuildingState }
+import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Edge, Game, GameField, Green, Hex, PlacementPoint, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, StructurePlacement, Vertex, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
 import play.api.data.FormError
 
@@ -12,15 +14,21 @@ import scala.math.cos
  */
 
 object GameData {
-  def apply( gameSession:GameSession, errors:Map[String, List[String]] ):GameData = new GameData(
+  def apply( gameSession:GameSession ):GameData = new GameData(
     gameSession.controller.game,
     gameSession.controller.hasUndo,
     gameSession.controller.hasRedo,
     gameSession.resourceImages,
-    errors = errors
+    getBuildablePoints( gameSession.controller.game )
   )
 
-  def apply( gameSession:GameSession ):GameData = apply( gameSession, Map.empty )
+  private def getBuildablePoints( game:Game ):List[PlacementPoint] = game.state match {
+    case BuildInitSettlementState() => SettlementPlacement.getBuildablePoints( game, game.player.id, any = true )
+    case BuildInitRoadState( vID ) => game.getBuildableRoadSpotsForSettlement( vID )
+    case BuildState( structure ) => structure.getBuildablePoints( game, game.player.id )
+    case DevRoadBuildingState( _, _ ) => RoadPlacement.getBuildablePoints( game, game.player.id )
+    case _ => Nil
+  }
 }
 
 
@@ -28,8 +36,8 @@ case class GameData( game:Game,
                      hasUndo:Boolean,
                      hasRedo:Boolean,
                      resourceImages:Map[Resource, List[String]],
+                     buildablePoints:List[PlacementPoint],
                      resourceCounter:mutable.Map[Resource, Int] = mutable.Map(),
-                     errors:Map[String, List[String]] = Map.empty
                    ) {
 
   def gameField:GameField = game.gameField
@@ -73,8 +81,8 @@ case class GameData( game:Game,
   def getEdge( hex:Hex, offsetIndex:Int ):Option[Edge] =
     gameField.adjacentEdge( hex, offsetIndex )
 
-  def getBuilding( hex:Hex, offsetIndex1:Int, offsetIndex2:Int ):Option[Building] =
-    gameField.adjacentVertex( hex, offsetIndex1, offsetIndex2 ).flatMap( _.building )
+  def getVertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int ):Option[Vertex] =
+    gameField.adjacentVertex( hex, offsetIndex1, offsetIndex2 )
 
   def structureDisplayClass( structure:Option[Structure] ):String = structure match {
     case Some( _ ) => "structureBuilt"

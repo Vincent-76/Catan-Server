@@ -111,7 +111,8 @@
     font-size: 0.8em;
     //cursor: inherit;
     transition: box-shadow 0.1s ease-in-out;
-    margin: 2px;
+    margin: 2px !important;
+    -webkit-text-stroke: unset !important;
   }
 
   .playerDevCard:hover {
@@ -123,19 +124,16 @@
   }
 }
 
+.devCardDialogControl {
+  display: none;
+
+  &:not(:checked) + .devCardDialog {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
 .devCardDialog {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  background-color: rgba( 0, 0, 0, 0.6 );
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  display: flex;
-  visibility: hidden;
-  opacity: 0;
   transition: opacity 0.5s ease;
 
   > img {
@@ -145,10 +143,5 @@
       width: auto;
       height: 40%;
     }
-  }
-
-  &:target {
-    visibility: visible;
-    opacity: 1;
   }
 }

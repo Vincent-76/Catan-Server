@@ -1,0 +1,4 @@
+@import com.aimit.htwg.catan.model.GatherInfo
+@( gatherInfo:GatherInfo ) {
+	<p>@gatherInfo.dices._1 + @gatherInfo.dices._2 = @{ gatherInfo.dices._1 + gatherInfo.dices._2 }</p>
+}

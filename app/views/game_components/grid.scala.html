@@ -85,7 +85,17 @@
 		<div class="hexRow2">
 			<div class="hexCell hexCell3"></div>
 			<div class="hexCell hexCell5">@road( hex, 2, "roadE" )</div>
-			<div class="hexCell hexCell4"></div>
+			<div class="hexCell hexCell4">
+				@hex.area match {
+					case area:ResourceArea => {
+						<img src="@routes.Assets.versioned( "images/numbers/" + area.number.value + ".png" ) " class=" resourceNumber" alt="@area.number.value" />
+					}
+					case _ => {}
+				}
+				@if( gameData.buildablePoints.exists( p => p.isInstanceOf[Hex] && p.id == hex.hID ) ) {
+					<a href="@routes.GameController.placeRobber( hex.hID )" class="buildPlacementPoint"></a>
+				}
+			</div>
 		</div>
 		<div class="hexRow3">
 			<div class="hexCell hexCell6">@road( hex, 0, "roadSW" )</div>
@@ -100,16 +110,21 @@
 @road( hex:Hex, offsetIndex:Int, positionClass:String ) = {
 	@defining( gameData.getEdge( hex, offsetIndex ) ) { edge =>
 		@if( edge.isDefined ) {
-			<div class="road @positionClass @gameData.structureDisplayClass( edge.get.road )">
-				<div class="placementBorder"></div>
-				<div class="placementContent @gameData.structureColorClass( edge.get.road )"></div>
+			<div class="road @positionClass">
+				<div class="structure @gameData.structureDisplayClass( edge.get.road )">
+					<div class="placementBorder"></div>
+					<div class="placementContent @gameData.structureColorClass( edge.get.road )"></div>
+				</div>
+				@if( edge.isDefined && gameData.buildablePoints.exists( p => p.isInstanceOf[Edge] && p.id == edge.get.eID ) ) {
+					<a href="@routes.GameController.build( edge.get.eID )" class="buildPlacementPoint"></a>
+				}
 			</div>
-			@roadInteraction( edge.get )
+			@* @roadInteraction( edge.get ) *@
 		}
 	}
 }
 
-
+@*
 @roadInteraction( edge:Edge ) = {
 	@gameData.game.state match {
 		case _:BuildInitRoadState => {
@@ -120,19 +135,27 @@
 				@roadInteractionView( routes.GameController.saveGame() )
 			}
 		}
+		case _ =>
 	}
 }
 
 @roadInteractionView( call:Call ) = {
 	<a href="@call" class="gridInteraction"></a>
 }
-
+*@
 
 @vertex( hex:Hex, offsetIndex1:Int, offsetIndex2:Int, positionClass:String ) = {
-	@defining( gameData.getBuilding( hex, offsetIndex1, offsetIndex2 ) ) { building =>
-		  <div class="vertex @positionClass @gameData.structureDisplayClass( building ) @gameData.buildingClass( building )">
-			  <div class="placementBorder"></div>
-			  <div class="placementContent @gameData.structureColorClass( building )"></div>
+	@defining( gameData.getVertex( hex, offsetIndex1, offsetIndex2 ) ) { vertex =>
+		  <div class="vertex @positionClass">
+			  <div class="vertexContent">
+				  <div class="structure @gameData.structureDisplayClass( vertex.flatMap( _.building ) ) @gameData.buildingClass( vertex.flatMap( _.building ) )">
+					  <div class="placementBorder"></div>
+					  <div class="placementContent @gameData.structureColorClass( vertex.flatMap( _.building ) )"></div>
+				  </div>
+				  @if( vertex.isDefined && gameData.buildablePoints.exists( p => p.isInstanceOf[Vertex] && p.id == vertex.get.vID ) ) {
+					  <a href="@routes.GameController.build( vertex.get.vID )" class="buildPlacementPoint"></a>
+				  }
+			  </div>
 		  </div>
 	}
 }

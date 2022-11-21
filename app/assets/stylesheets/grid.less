@@ -85,8 +85,14 @@
 
     > .hexCell4 {
       width: auto;
+      position: relative;
       float: none;
       margin: 0 @roadWidth / 2 0 @roadWidth / 2;
+
+      .buildPlacementPoint {
+        top: -8%;
+        width: 20%;
+      }
     }
 
     > .hexCell5 {
@@ -116,6 +122,44 @@
     height: 100%;
     z-index: 10;
   }
+
+  .buildPlacementPoint {
+    @color: #D09029;
+
+    aspect-ratio: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50% );
+    background-color: transparent;
+    border: solid 0.2rem @color;
+    border-radius: 100%;
+    transition: 0.1s ease-in-out;
+    z-index: 20;
+
+    &:hover {
+      box-shadow: inset 0 0 8px @color;
+      text-decoration: initial !important;
+    }
+
+    &:active {
+      box-shadow: inset 0 0 16px @color;
+    }
+  }
+
+  .resourceNumber {
+    width: 40%;
+    aspect-ratio: 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate( -50%, -50% );
+  }
+}
+
+.structure {
+  width: 100%;
+  height: 100%;
 }
 
 .structureBuilt {
@@ -133,6 +177,10 @@
   width: 100%;
   height: 100%;
   //filter: url( #buildingFilter );
+
+  .buildPlacementPoint {
+    width: 40%;
+  }
 
   @roadXMult: cos( 30deg );
   @roadYMult: sin( 30deg );
@@ -184,6 +232,10 @@
   }
 
   &.roadE {
+    .buildPlacementPoint {
+      width: 200%;
+    }
+
     .placementBorder {
       clip-path: polygon(
               0     @roadGap,
@@ -214,6 +266,16 @@
   width: @vertexSize;
   height: @vertexSize * cos( 30deg );
   z-index: 15;
+
+  .vertexContent {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .buildPlacementPoint {
+    width: 100%;
+  }
 
   &.vertexS {
     left: 50% - @vertexSize / 2;

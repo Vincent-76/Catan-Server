@@ -1,0 +1,9 @@
+@import com.aimit.htwg.catan.model.GatherInfo
+@import views.html.infos.dice_info
+@import com.aimit.htwg.catan.model.DiceInfo
+@( gatherInfo:GatherInfo )
+
+
+<div id="gatherInfo">
+	@dice_info( DiceInfo( gatherInfo.dices ) )
+</div>
