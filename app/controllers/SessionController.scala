@@ -51,7 +51,7 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
 
   def loadGameSession( session:Session ):Unit = session.get( "sessionID" ).foreach( sessionID =>
     getGameSession( session ).foreach( gameSession =>
-      findSaveGamePath( sessionID ).foreach( gameSession.controller.loadGame )
+      findSaveGamePath( sessionID ).foreach( path => gameSession.controller.loadGame( path ) )
     )
   )
 
@@ -92,6 +92,9 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
       (session + ("sessionID" -> sessionID), createNewGameSession( sessionID, catanModule ))
   }
 
+  def getSessionSaveGame( session:Session ):Option[java.io.File] =
+    session.get( "sessionID" ).flatMap( sessionID => findSaveGame( sessionID, _.headOption ).flatten )
+
   private def createNewGameSession( sessionID:String, catanModule:CatanModule ):GameSession = {
     val injector = Guice.createInjector( catanModule )
     val newGame = injector.getInstance( classOf[Game] )
@@ -101,7 +104,7 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
     gameSession
   }
 
-  private def findSaveGames[R]( sessionID:String, f: List[java.io.File] => R ):Option[R] = {
+  private def findSaveGame[R]( sessionID:String, f: List[java.io.File] => R ):Option[R] = {
     val dir = new java.io.File( CatanModule.savegamePath )
     if( dir.exists && dir.isDirectory ) {
       try {
@@ -113,11 +116,11 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
   }
 
   private def hasSaveGame( sessionID:String ):Boolean =
-    findSaveGames( sessionID, _.nonEmpty ).getOrElse( false )
+    findSaveGame( sessionID, _.nonEmpty ).getOrElse( false )
 
   private def findSaveGamePath( sessionID:String ):Option[String] =
-    findSaveGames( sessionID, _.headOption.map( _.getAbsolutePath ) ).flatten
+    findSaveGame( sessionID, _.headOption.map( _.getAbsolutePath ) ).flatten
 
   private def deleteSaveGame( sessionID:String ):Unit =
-    findSaveGames( sessionID, _.foreach( _.delete() ) )
+    findSaveGame( sessionID, _.foreach( _.delete() ) )
 }

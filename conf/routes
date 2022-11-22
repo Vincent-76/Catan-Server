@@ -23,9 +23,9 @@ POST	/game/create				controllers.GameController.createGame()
 GET		/game						controllers.GameController.game()
 
 
-GET		/game/save					controllers.GameController.saveGame()
+GET		/game/download				controllers.GameController.downloadGame()
 
-GET		/game/load					controllers.GameController.loadGame()
+POST	/game/upload				controllers.GameController.uploadGame()
 
 GET		/game/undo					controllers.GameController.undo()
 

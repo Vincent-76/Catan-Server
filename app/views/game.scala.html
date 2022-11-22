@@ -11,6 +11,7 @@
 @import views.html.infos.gather_info
 @import com.aimit.htwg.catan.model.GatherInfo
 @import model.RequestError
+@import views.html.helper.form
 @( gameData:GameData, info:Option[Info], errors:List[RequestError] = Nil )
 
 
@@ -32,11 +33,12 @@
 			<a id="homeButton" class="button navButton2" href="@routes.HomeController.index()">
 				<img src="@routes.Assets.versioned( "images/home.png" )" alt="Home" />
 			</a>
-			<a id="saveButton" class="button asyncButton navButton2" href="@routes.GameController.saveGame()">
-				<img src="@routes.Assets.versioned( "images/save.png" )" alt="Save" />
-			</a>
-			<a id="loadButton" class="button asyncButton navButton2" href="@routes.GameController.loadGame()">
-				<img src="@routes.Assets.versioned( "images/load.png" )" alt="Load" />
+			<label for="uploadInput" id="uploadButton" class="button navButton2">
+				<img src="@routes.Assets.versioned( "images/upload.png" )" alt="Upload" />
+				<input type="file" id="uploadInput" href="@routes.GameController.uploadGame()" />
+			</label>
+			<a id="downloadButton" class="button navButton2" href="@routes.GameController.downloadGame()">
+				<img src="@routes.Assets.versioned( "images/download.png" )" alt="Download" />
 			</a>
 			@if( gameData.hasUndo ) {
 				<a id="undoButton" class="button asyncButton navButton2" href="@routes.GameController.undo()">

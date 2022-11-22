@@ -3,14 +3,16 @@ package controllers
 import akka.actor.ActorSystem
 import com.aimit.htwg.catan.controller.Controller
 import com.aimit.htwg.catan.model.state.{ InitBeginnerState, InitPlayerState, InitState, NextPlayerState }
-import com.aimit.htwg.catan.model.{ Command, DevelopmentCard, Info, NamedComponent, NamedComponentImpl, State }
-import model.{ GameData, RequestError, ValidationError }
-import model.form.NewGame.NamedComponentMapping
+import com.aimit.htwg.catan.model._
 import model.form.{ AddPlayer, NewGame }
+import model.{ GameData, RequestError, ValidationError }
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.Files
 import play.api.mvc._
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.{ Inject, Singleton }
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success, Try }
@@ -43,7 +45,7 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
       Ok( views.html.game( GameData( gameSession.get ), info, errors ) )
   }
 
-  private def showGameErrors( requestHeader: RequestHeader, errors:Map[String, List[String]] ):Result = showGame(
+  private def showGameErrors( requestHeader:RequestHeader, errors:Map[String, List[String]] ):Result = showGame(
     errors = errors.flatMap( d => d._2.map( name => RequestError( ValidationError.msg( name ), Some( d._1 ) ) ) ).toList
   )( requestHeader )
 
@@ -107,14 +109,25 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
   }
 
 
-  def saveGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+  def downloadGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
     sessionController.saveGameSession( request.session )
-    Redirect( routes.GameController.game() )
+    val file = sessionController.getSessionSaveGame( request.session )
+    if( file.isDefined )
+      Ok.sendFile(
+        content = file.get,
+        fileName = f =>
+          Some( s"Catan_${DateTimeFormatter.ofPattern( "yyyy-MM-dd_HH:mm" ).format( LocalDateTime.now )}_${f.getName}" ),
+        inline = false
+      )
+    else
+      showGame( errors = List( RequestError( "No savegame found!" ) ) );
   }
 
-  def loadGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
-    sessionController.loadGameSession( request.session )
-    Redirect( routes.GameController.game() )
+  def uploadGame( ):Action[MultipartFormData[Files.TemporaryFile]] = Action( parse.multipartFormData ) { request =>
+    request.body.file( "file" ).map( file => {
+      val extension = file.filename.substring( file.filename.lastIndexOf( "." ) + 1 )
+      controllerAction( _.loadGame( file.ref.getAbsolutePath, Some( extension ) ) )( request )
+    } ).getOrElse( Redirect( routes.GameController.game() ) )
   }
 
   def undo( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
