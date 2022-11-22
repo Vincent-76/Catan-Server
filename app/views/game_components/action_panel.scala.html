@@ -10,10 +10,12 @@
 </style>
 
 
-<div id="actionPanel" class="px-2 ropeBorder">
+<div id="actionPanel" class="ropeBorder">
 	@gameData.game.state match {
 		case _:DiceState => {
-			@actionButton( "Roll the Dices", routes.GameController.rollTheDices() )
+			<a href="@routes.GameController.rollTheDices()" id="rollTheDices" class="button asyncButton">
+				<img src="@routes.Assets.versioned( "/images/dices.png" )" alt="Roll The Dices" />
+			</a>
 		}
 		case s => {
 			<p style="color: white">@s.getClass.getSimpleName</p>
@@ -21,6 +23,22 @@
 	}
 </div>
 
-@actionButton( name:String, call:Call ) = {
-	<a href="@call" class="button">@name</a>
+@buildButton = {
+
+}
+
+@bankTradeButton = {
+
+}
+
+@playerTradeButton = {
+
+}
+
+@buyDevCardButton = {
+
+}
+
+@endTurnButton = {
+
 }

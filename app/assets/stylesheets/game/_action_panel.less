@@ -3,4 +3,38 @@
   background-position: center;
   background-size: 430px;
   background-repeat: repeat;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  column-gap: 0.5rem;
+
+  @media (orientation: portrait) {
+    flex-direction: row;
+  }
+
+  /*> * {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+
+    &:first-child {
+      margin-top: 0.5rem;
+    }
+
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
+  }*/
+}
+
+#rollTheDices {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 80%;
+    max-height: 80%;
+    aspect-ratio: 1024 / 602;
+  }
 }

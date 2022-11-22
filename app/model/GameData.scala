@@ -1,7 +1,7 @@
 package model
 
-import com.aimit.htwg.catan.model.impl.placement.{ RoadPlacement, SettlementPlacement }
-import com.aimit.htwg.catan.model.state.{ BuildInitRoadState, BuildInitSettlementState, BuildState, DevRoadBuildingState }
+import com.aimit.htwg.catan.model.impl.placement.{ RoadPlacement, RobberPlacement, SettlementPlacement }
+import com.aimit.htwg.catan.model.state.{ BuildInitRoadState, BuildInitSettlementState, BuildState, DevRoadBuildingState, RobberPlaceState }
 import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Edge, Game, GameField, Green, Hex, PlacementPoint, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, StructurePlacement, Vertex, WaterArea, Yellow }
 import com.aimit.htwg.catan.util.RichOption
 import play.api.data.FormError
@@ -23,6 +23,7 @@ object GameData {
   )
 
   private def getBuildablePoints( game:Game ):List[PlacementPoint] = game.state match {
+    case RobberPlaceState( _ ) => RobberPlacement.getBuildablePoints( game, game.player.id )
     case BuildInitSettlementState() => SettlementPlacement.getBuildablePoints( game, game.player.id, any = true )
     case BuildInitRoadState( vID ) => game.getBuildableRoadSpotsForSettlement( vID )
     case BuildState( structure ) => structure.getBuildablePoints( game, game.player.id )

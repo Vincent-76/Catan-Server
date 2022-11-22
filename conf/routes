@@ -46,6 +46,8 @@ GET /game/build/:id					controllers.GameController.build( id:Int )
 
 GET /game/roll_the_dices			controllers.GameController.rollTheDices()
 
+GET /game/use_dev_card/:devCard		controllers.GameController.useDevCard( devCard:String )
+
 
 
 # Map static resources from the /public folder to the /assets URL path

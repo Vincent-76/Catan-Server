@@ -8,6 +8,8 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 import com.google.inject.{ Guice, Injector }
+import play.api.http.MimeTypes
+import play.api.routing.JavaScriptReverseRouter
 
 import java.io.FileInputStream
 import scala.collection.mutable

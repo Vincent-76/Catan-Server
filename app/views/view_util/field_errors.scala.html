@@ -1,0 +1,11 @@
+@import model.RequestError
+@( field:Field, errorList:List[RequestError], center:Boolean = true )
+
+@defining( errorList.filter( _.field.exists( _ == field.name ) ) ) { errors =>
+	<div class="errorInfo @{if( errors.nonEmpty ) "my-1"} @{ if( center ) "centerText"}">
+		@for( error <- errors ) {
+			<p>@error.message</p>
+		}
+	</div>
+}
+

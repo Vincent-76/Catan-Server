@@ -10,10 +10,11 @@
 @import com.aimit.htwg.catan.model.DiceInfo
 @import views.html.infos.gather_info
 @import com.aimit.htwg.catan.model.GatherInfo
-@( gameData:GameData, info:Option[Info], errors:Map[String, List[String]] = Map.empty )
+@import model.RequestError
+@( gameData:GameData, info:Option[Info], errors:List[RequestError] = Nil )
 
 
-@main( stylesheets = List( "game.css", "grid.css" ) ) {
+@main( stylesheets = List( "game.css", "grid.css" ), errors = errors ) {
 
 	<style>
 			#gridPanel {
@@ -31,19 +32,19 @@
 			<a id="homeButton" class="button navButton2" href="@routes.HomeController.index()">
 				<img src="@routes.Assets.versioned( "images/home.png" )" alt="Home" />
 			</a>
-			<a id="saveButton" class="button navButton2" href="@routes.GameController.saveGame()">
+			<a id="saveButton" class="button asyncButton navButton2" href="@routes.GameController.saveGame()">
 				<img src="@routes.Assets.versioned( "images/save.png" )" alt="Save" />
 			</a>
-			<a id="loadButton" class="button navButton2" href="@routes.GameController.loadGame()">
+			<a id="loadButton" class="button asyncButton navButton2" href="@routes.GameController.loadGame()">
 				<img src="@routes.Assets.versioned( "images/load.png" )" alt="Load" />
 			</a>
 			@if( gameData.hasUndo ) {
-				<a id="undoButton" class="button navButton2" href="@routes.GameController.undo()">
+				<a id="undoButton" class="button asyncButton navButton2" href="@routes.GameController.undo()">
 					<img src="@routes.Assets.versioned( "images/undo.png" )" alt="Undo" />
 				</a>
 			}
 			@if( gameData.hasRedo ) {
-				<a id="redoButton" class="button navButton2" href="@routes.GameController.redo()">
+				<a id="redoButton" class="button asyncButton navButton2" href="@routes.GameController.redo()">
 					<img src="@routes.Assets.versioned( "images/redo.png" )" alt="Redo" />
 				</a>
 			}

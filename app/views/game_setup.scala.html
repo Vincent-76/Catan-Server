@@ -7,14 +7,16 @@
 @import model.ValidationError
 @import com.aimit.htwg.catan.model.FileIO
 @import com.aimit.htwg.catan.model.Placement
-@import views.html.view_util.error_info
 @import model.form.AddPlayer
 @import com.aimit.htwg.catan.model.PlayerColor
 @import com.aimit.htwg.catan.model.state.InitPlayerState
 @import com.aimit.htwg.catan.model.state.InitBeginnerState
-@( gameData:Option[GameData] = None, errors:Map[String, List[String]] = Map.empty )( implicit messages:Messages )
+@import model.RequestError
+@import views.html.view_util.field_errors
+@import util.RichIterable
+@( gameData:Option[GameData] = None, errors:List[RequestError] = Nil )( implicit messages:Messages )
 
-@main( stylesheets = List( "game_setup.css" ) ) {
+@main( stylesheets = List( "game_setup.css" ), errors = errors ) {
 	@nav( gameData ) {
 		<style>
 			body {
@@ -33,7 +35,7 @@
 		@if( gameData.isEmpty ) {
 			<div id="gameSetup" class="col-md-8">
 				<div class="ropeBorder">
-					@form( action = routes.GameController.createGame(), Symbol( "method" ) -> "POST", Symbol( "id" ) -> "gameSettings" ) {
+					@form( action = routes.GameController.createGame(), Symbol( "method" ) -> "POST", Symbol( "id" ) -> "gameSettings", Symbol( "class" ) -> "asyncForm" ) {
 						<div class="row m-0">
 							<div id="moduleSelect" class="col-sm-4 my-2">
 								<label class="selectLabel">Game Mode</label>
@@ -42,7 +44,7 @@
 										<option value="@module.name">@module.name</option>
 									}
 								</select>
-								@error_info( NewGame.form( "module" ), errors )
+								@field_errors( NewGame.form( "module" ), errors )
 							</div>
 							<div id="placementSelect" class="col-sm-4 my-2">
 								<div class="row mx-0 woodenMetal">
@@ -54,7 +56,7 @@
 											<label for="@placement.name">@placement.name</label>
 										</div>
 									}
-									@error_info( NewGame.form( "availablePlacements" ), errors )
+									@field_errors( NewGame.form( "availablePlacements" ), errors )
 								</div>
 							</div>
 							<div id="fileIOSelect" class="col-sm-4 my-2">
@@ -64,7 +66,7 @@
 										<option value="@fileIO.name" selected>@fileIO.name</option>
 									}
 								</select>
-								@error_info( NewGame.form( "fileIO" ), errors )
+								@field_errors( NewGame.form( "fileIO" ), errors )
 							</div>
 						</div>
 						<div id=createGame class="row mx-0">
@@ -82,7 +84,7 @@
 						<div class="ropeBorder">
 							<div id="initPlayer" class="row mx-0">
 								<div id="addPlayer" class="col-md-7 my-2">
-									@form( action = routes.GameController.addPlayer(), Symbol( "method" ) -> "POST" ) {
+									@form( action = routes.GameController.addPlayer(), Symbol( "method" ) -> "POST", Symbol( "class" ) -> "asyncForm" ) {
 										<label id="addPlayerLabel" class="mb-3">Add Player</label>
 										<div id="playerName" class="row mx-0">
 											<label>Name:</label>
@@ -90,7 +92,7 @@
 												<input type="text" name="@{AddPlayer.form( "name" ).name}" />
 											</div>
 										</div>
-										@error_info( AddPlayer.form( "name" ), errors )
+										@field_errors( AddPlayer.form( "name" ), errors )
 										<div id="playerColor" class="row mx-0">
 											<label>Color:</label>
 											<div class="col-sm row mx-0 pr-0">
@@ -107,11 +109,11 @@
 												}
 											</div>
 										</div>
-										@error_info( AddPlayer.form( "color" ), errors )
+										@field_errors( AddPlayer.form( "color" ), errors )
 										<div id="sendAddPlayer" class="row mx-0 my-2">
 											<input type="submit" value="Add Player" class="col-sm button" />
 											@if( gameData.get.game.players.size >= gameData.get.game.minPlayers ) {
-												<a class="col-sm button" href="@routes.GameController.setInitBeginnerState()">Next</a>
+												<a class="col-sm button asyncButton" href="@routes.GameController.setInitBeginnerState()">Next</a>
 											}
 										</div>
 									}
@@ -140,7 +142,7 @@
 									if( state.diceValues.isEmpty )
 										gameData.get.game.players.map( d => (d._1, None) )
 									else
-										state.diceValues.map( d => (d._1, Some( d._2 )) )
+										state.diceValues.map( d => (d._1, if( d._2 > 0 ) Some( d._2 ) else None) )
 								) { dicePlayers =>
 									@for( diceValue <- dicePlayers ) {
 										<div class="col-12 row mx-0 my-2 woodenMetal align-items-center">
@@ -157,11 +159,11 @@
 									}
 								}
 								@if( state.beginner.isEmpty ) {
-									<a id="diceOutButton" class="col my-2 button" href="@routes.GameController.diceOutBeginner()">
+									<a id="diceOutButton" class="col my-2 button asyncButton" href="@routes.GameController.diceOutBeginner()">
 										<img src="@routes.Assets.versioned( "images/dices.png" )" alt="Roll the dices"/>
 									</a>
 								} else {
-									<a id="startButton" class="col my-2 button" href="@routes.GameController.setBeginner()">Start</a>
+									<a id="startButton" class="col my-2 button asyncButton" href="@routes.GameController.setBeginner()">Start</a>
 								}
 							</div>
 						</div>

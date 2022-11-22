@@ -1,3 +1,9 @@
+@robberWidth: 80%;
+@robberHeight: 100%;
+@robberBorder: 6%;
+@robberHeadHeight: 30%;
+@robberHeadWidth: 50%;
+
 @roadWidth: 10%;
 @roadLength: 60%;
 @roadBorder: 10%;
@@ -168,6 +174,48 @@
 
 .structureNotBuilt {
   display: none;
+}
+
+
+#robber {
+  aspect-ratio: 1;
+  position: absolute;
+  width: 23%;
+  left: 50%;
+  top: -8%;
+  transform: translate( -50%, -50% );
+  z-index: 18;
+
+  @robberGapX: ( 100% - @robberWidth ) / 2;
+  @robberGapY: ( 100% - @robberHeight ) / 2;
+  @robberHeadGap: ( 100% - @robberHeadWidth ) / 2;
+
+  .placementBorder {
+    clip-path: polygon(
+            100% - @robberGapX          100% - @robberGapY,
+            @robberGapX                 100% - @robberGapY,
+            @robberGapX                 @robberGapY + @robberHeadHeight,
+            @robberHeadGap              @robberGapY + @robberHeadHeight,
+            @robberHeadGap              @robberGapY,
+            100% - @robberHeadGap       @robberGapY,
+            100% - @robberHeadGap       @robberGapY + @robberHeadHeight,
+            100% - @robberGapX          @robberGapY + @robberHeadHeight
+    );
+  }
+
+  .placementContent {
+    background-color: #586572;
+    clip-path: polygon(
+            100% - @robberGapX - @robberBorder      100% - @robberGapY - @robberBorder,
+            @robberGapX + @robberBorder             100% - @robberGapY - @robberBorder,
+            @robberGapX + @robberBorder             @robberGapY + @robberHeadHeight + @robberBorder,
+            @robberHeadGap + @robberBorder          @robberGapY + @robberHeadHeight + @robberBorder,
+            @robberHeadGap + @robberBorder          @robberGapY + @robberBorder,
+            100% - @robberHeadGap - @robberBorder   @robberGapY + @robberBorder,
+            100% - @robberHeadGap - @robberBorder   @robberGapY + @robberHeadHeight + @robberBorder,
+            100% - @robberGapX - @robberBorder      @robberGapY + @robberHeadHeight + @robberBorder
+    );
+  }
 }
 
 

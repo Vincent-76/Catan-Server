@@ -3,8 +3,9 @@ package controllers
 import akka.actor.ActorSystem
 import com.aimit.htwg.catan.controller.Controller
 import com.aimit.htwg.catan.model.state.{ InitBeginnerState, InitPlayerState, InitState, NextPlayerState }
-import com.aimit.htwg.catan.model.{ Command, Info, State }
-import model.GameData
+import com.aimit.htwg.catan.model.{ Command, DevelopmentCard, Info, NamedComponent, NamedComponentImpl, State }
+import model.{ GameData, RequestError, ValidationError }
+import model.form.NewGame.NamedComponentMapping
 import model.form.{ AddPlayer, NewGame }
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -12,7 +13,7 @@ import play.api.mvc._
 
 import javax.inject.{ Inject, Singleton }
 import scala.concurrent.ExecutionContext
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 /**
  * @author Vincent76
@@ -33,7 +34,7 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
                                 val messagesAPI:MessagesApi
                               )( implicit executionContext:ExecutionContext ) extends CatanBaseController( controllerComponents ) {
 
-  private def showGame( info:Option[Info] = None, errors:Map[String, List[String]] = Map.empty )( implicit request:RequestHeader ):Result = {
+  private def showGame( info:Option[Info] = None, errors:List[RequestError] = Nil )( implicit request:RequestHeader ):Result = {
     val gameSession = sessionController.getGameSession( request.session )
     gameSession.foreach( s => println( s.controller.game.state.getClass.getSimpleName ) )
     if( gameSession.isEmpty || GameController.SETUP_STATES.exists( _.isInstance( gameSession.get.controller.game.state ) ) )
@@ -42,8 +43,9 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
       Ok( views.html.game( GameData( gameSession.get ), info, errors ) )
   }
 
-  private def showGameErrors( requestHeader: RequestHeader, errors:Map[String, List[String]] ):Result =
-    showGame( errors = errors )( requestHeader )
+  private def showGameErrors( requestHeader: RequestHeader, errors:Map[String, List[String]] ):Result = showGame(
+    errors = errors.flatMap( d => d._2.map( name => RequestError( ValidationError.msg( name ), Some( d._1 ) ) ) ).toList
+  )( requestHeader )
 
 
   def newGame( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
@@ -74,11 +76,11 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
           result
         }
       } else result
-      if( res.isSuccess && res.get.isDefined )
-        showGame( res.get )
-      else
-        Redirect( routes.GameController.game() )
-      // TODO
+      res match {
+        case Success( None ) => Redirect( routes.GameController.game() )
+        case Success( info ) => showGame( info )
+        case Failure( t ) => showGame( errors = List( RequestError( gameSession.get.controller, t ) ) )
+      }
     } else Redirect( routes.GameController.game() )
   }
 
@@ -89,8 +91,19 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
   private def gameFormAction[F]( form:Form[F],
                                  onErrors:(RequestHeader, Map[String, List[String]]) => Result,
                                  f:(F, State) => Option[Command]
-                               ) = formAction[F]( form, onErrors ) { implicit request:Request[F] =>
+                               ):Action[F] = formAction[F]( form, onErrors ) { implicit request:Request[F] =>
     controllerAction( _.action( s => f( request.body, s ) ) )
+  }
+
+  private def gameParameterAction[I <: NamedComponentImpl]( namedComponent:NamedComponent[I],
+                                                            parameter:String,
+                                                            f:(I, State) => Option[Command]
+                                                          ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    val value = namedComponent.of( parameter )
+    if( value.isDefined )
+      controllerAction( _.action( s => f( value.get, s ) ) )
+    else
+      BadRequest( ValidationError.Invalid.name )
   }
 
 
@@ -127,4 +140,7 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
   def build( id:Int ):Action[AnyContent] = gameAction( _.build( id ) )
 
   def rollTheDices( ):Action[AnyContent] = gameAction( _.rollTheDices() )
+
+  def useDevCard( devCardString:String ):Action[AnyContent] =
+    gameParameterAction[DevelopmentCard]( DevelopmentCard, devCardString, ( devCard, state ) => state.useDevCard( devCard ) )
 }

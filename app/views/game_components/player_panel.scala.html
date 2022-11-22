@@ -6,6 +6,8 @@
 @import com.aimit.htwg.catan.model.Sheep
 @import com.aimit.htwg.catan.model.Wheat
 @import com.aimit.htwg.catan.model.Ore
+@import com.aimit.htwg.catan.model.state.DiceState
+@import com.aimit.htwg.catan.model.state.ActionState
 @( gameData:GameData, player:Player )
 
 <style>
@@ -62,7 +64,12 @@
 @for( devCard <- player.devCards.distinct ) {
 	<input type="checkbox" id="devCard@{devCard.name}Control" class="devCardDialogControl" />
 	<label for="devCard@{devCard.name}Control" id="devCard@devCard.name" class="devCardDialog dialogDisplay">
-		<img src="@routes.Assets.versioned( s"images/devCards/${devCard.name.toLowerCase}.png" )" alt="@devCard.name">
+		<div>
+			<img src="@routes.Assets.versioned( s"images/devCards/${devCard.name.toLowerCase}.png" )" alt="@devCard.name">
+			@if( gameData.game.state.isInstanceOf[DiceState] || gameData.game.state.isInstanceOf[ActionState] ) {
+				<a href="@routes.GameController.useDevCard( devCard.name )" class="button asyncButton">Use</a>
+			}
+		</div>
 	</label>
 }
 

@@ -119,6 +119,8 @@ input[type="text"] {
   text-decoration: none;
   display: flex;
   z-index: 100;
+  padding-left: 10%;
+  padding-right: 10%;
 }
 
 .dialog {
@@ -129,6 +131,28 @@ input[type="text"] {
   &:target {
     visibility: visible;
     opacity: 1;
+  }
+}
+
+#generalErrorsToggle {
+  display: none;
+
+  &:not(:checked) ~ #generalErrors {
+    display: none;
+  }
+}
+
+#generalErrors {
+  > div {
+    background-color: indianred;
+    border: solid 0.4rem black;
+    border-radius: 12px;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  p {
+    margin: 0;
   }
 }
 
