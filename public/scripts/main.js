@@ -32,7 +32,6 @@ function onLoad() {
         if( loading ) return;
         loading = true;
         $( this ).addClass( "buttonLoading" )
-        await new Promise( resolve => setTimeout( resolve, 3000 ) );
         $.ajax( {
             url: $( this ).attr( "href" ),
             success: replaceDocument,
@@ -49,7 +48,6 @@ function onLoad() {
         if( loading ) return;
         loading = true;
         $( this ).find( "input[type=submit]" ).addClass( "buttonLoading" )
-        await new Promise( resolve => setTimeout( resolve, 3000 ) );
         $.ajax( {
             type: $( this ).attr( "method" ) || "POST",
             url: $( this ).attr( "action" ),
@@ -68,7 +66,6 @@ function onLoad() {
         loading = true;
         const uploadButton = $( "#uploadButton" )
         uploadButton.addClass( "buttonLoading" )
-        await new Promise( resolve => setTimeout( resolve, 3000 ) );
         const fileData = $( this ).prop( "files" )[0];
         const formData = new FormData();
         formData.append( "file", fileData );
