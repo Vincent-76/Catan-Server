@@ -1,14 +1,18 @@
 package controllers
 
-import akka.actor.ActorSystem
+import akka.actor.{ ActorRefFactory, ActorSystem }
+import akka.stream.Materializer
 import com.aimit.htwg.catan.controller.Controller
 import com.aimit.htwg.catan.model.state.{ InitBeginnerState, InitPlayerState, InitState, NextPlayerState }
 import com.aimit.htwg.catan.model._
 import model.form.{ AddPlayer, NewGame }
 import model.{ GameData, RequestError, ValidationError }
+import play.api.Play.materializer
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.Files
+import play.api.libs.json.Json
+import play.api.libs.streams.ActorFlow
 import play.api.mvc._
 
 import java.time.LocalDateTime
@@ -35,6 +39,17 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
                                 val actorSystem:ActorSystem,
                                 val messagesAPI:MessagesApi
                               )( implicit executionContext:ExecutionContext ) extends CatanBaseController( controllerComponents ) {
+
+
+
+    def gameData( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
+    sessionController.getGameSession( request.session ) match {
+      case Some( gameSession ) => Ok( GameData( gameSession ).toJson )
+      case None => Ok( Json.obj() )
+    }
+  }
+
+
 
   private def showGame( info:Option[Info] = None, errors:List[RequestError] = Nil )( implicit request:RequestHeader ):Result = {
     val gameSession = sessionController.getGameSession( request.session )

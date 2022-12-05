@@ -17,8 +17,19 @@ object GameSession {
     getShuffledImageIDs( controller.game.gameField.field )
   )
 
-  private def getShuffledImageIDs( field:Field[Hex] ):Map[Resource, List[String]] = {
-    val resourceVariantsAndCount:Map[Resource, (List[String], Int)] =
+  private def getShuffledImageIDs( field:Field[Hex] ):Map[Resource, List[Int]] = {
+    field.foldLeft( Map.empty[Resource, Int] )( ( data, row ) =>
+      row.mapWhere( h => h.isDefined && h.get.area.f.isInstanceOf[Resource], _.get.area.f.asInstanceOf[Resource] )
+        .foldLeft( data )( ( data, r ) => data.get( r )  match {
+          case Some( count ) => data + ( r -> ( count + 1 ) )
+          case None => data + ( r -> 1 )
+        } )
+    ).map( e => (
+      e._1,
+      Random.shuffle( ( 0 until e._2 ).toList )
+    ) )
+
+    /*val resourceVariantsAndCount:Map[Resource, (List[String], Int)] =
       field.foldLeft( Map.empty[Resource, (List[String], Int)] )( ( data, row ) =>
         row.mapWhere( h => h.isDefined && h.get.area.f.isInstanceOf[Resource], _.get.area.f.asInstanceOf[Resource] )
           .foldLeft( data )( ( data, r ) => data.get( r ) match {
@@ -29,10 +40,10 @@ object GameSession {
     resourceVariantsAndCount.map( e => (
       e._1,
       Random.shuffle( (0 until e._2._2).map( i => e._2._1( i % e._2._1.length ) ).toList )
-    ) )
+    ) )*/
   }
 
-  private def getResourceImageVariants( r:Resource ):List[String] = {
+  /*private def getResourceImageVariants( r:Resource ):List[String] = {
     try {
       val dir = new java.io.File( s"public/images/${r.name.toLowerCase}" )
       if( dir.exists() && dir.isDirectory )
@@ -41,11 +52,11 @@ object GameSession {
     } catch {
       case _:java.lang.SecurityException => Nil
     }
-  }
+  }*/
 }
 
 case class GameSession( controller:Controller,
-                        resourceImages:Map[Resource, List[String]],
+                        resourceImages:Map[Resource, List[Int]],
                         timestamp:Long = java.time.Instant.now().getEpochSecond,
                       ) {
 

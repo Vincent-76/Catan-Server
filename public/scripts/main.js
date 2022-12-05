@@ -27,6 +27,28 @@ function replaceDocument( html ) {
 
 function onLoad() {
 
+    var socket = new WebSocket( "ws://localhost:9000/websocket" );
+    socket.onopen = function() {
+        console.log( "WebSocket opened!" )
+
+        socket.send( "GameData" )
+        socket.send( "Game" )
+        socket.send( "GameField" )
+        socket.send( "Players" )
+        socket.send( "Resources" )
+        socket.send( "other" )
+    }
+    socket.onmessage = function( msg ) {
+        console.log( msg.data )
+    }
+    socket.onerror = function( error ) {
+        console.log( "Error: " + error )
+    }
+    socket.onclose = function() {
+        console.log( "WebSocket closed!" )
+    }
+
+
     $( ".asyncButton" ).click( async function( e ) {
         e.preventDefault();
         if( loading ) return;

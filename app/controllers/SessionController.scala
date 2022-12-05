@@ -69,19 +69,19 @@ class SessionController @Inject()( val actorSystem:ActorSystem, val lifeCycle: A
     case None =>
   }
 
-  def getGameSession( session:Session ):Option[GameSession] = session.get( "sessionID" ).flatMap( sessionID => {
-    gameSessions.get( sessionID ) match {
-      case Some( gameSession ) =>
-        gameSessions( sessionID ) = gameSession.update()
-        Some( gameSession )
-      case None => findSaveGamePath( sessionID ).map( path => {
-        val loaded = FileIO.load( path )
-        val gameSession = GameSession( new Controller( loaded._2._1, loaded._1, new UndoManager( loaded._2._2, loaded._2._3 ) ) )
-        gameSessions( sessionID ) = gameSession
-        gameSession
-      } );
-    }
-  } )
+  def getGameSession( session:Session ):Option[GameSession] = session.get( "sessionID" ).flatMap( getGameSession )
+
+  def getGameSession( sessionID:String ):Option[GameSession] = gameSessions.get( sessionID ) match {
+    case Some( gameSession ) =>
+      gameSessions( sessionID ) = gameSession.update()
+      Some( gameSession )
+    case None => findSaveGamePath( sessionID ).map( path => {
+      val loaded = FileIO.load( path )
+      val gameSession = GameSession( new Controller( loaded._2._1, loaded._1, new UndoManager( loaded._2._2, loaded._2._3 ) ) )
+      gameSessions( sessionID ) = gameSession
+      gameSession
+    } );
+  }
 
   def newGameSession( session:Session, catanModule:CatanModule ):(Session, GameSession) = session.get( "sessionID" ) match {
     case Some( sessionID ) =>

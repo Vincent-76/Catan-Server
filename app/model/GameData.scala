@@ -1,10 +1,11 @@
 package model
 
+import com.aimit.htwg.catan.model.impl.fileio.JsonSerializable
 import com.aimit.htwg.catan.model.impl.placement.{ RoadPlacement, RobberPlacement, SettlementPlacement }
-import com.aimit.htwg.catan.model.state.{ BuildInitRoadState, BuildInitSettlementState, BuildState, DevRoadBuildingState, RobberPlaceState }
-import com.aimit.htwg.catan.model.{ Blue, Building, City, DesertArea, Edge, Game, GameField, Green, Hex, PlacementPoint, PlayerColor, PlayerID, Red, Resource, ResourceArea, Road, Settlement, Structure, StructurePlacement, Vertex, WaterArea, Yellow }
+import com.aimit.htwg.catan.model.state._
+import com.aimit.htwg.catan.model._
 import com.aimit.htwg.catan.util.RichOption
-import play.api.data.FormError
+import play.api.libs.json.{ JsValue, Json }
 
 import scala.collection.mutable
 import scala.math.cos
@@ -13,7 +14,7 @@ import scala.math.cos
  * @author Vincent76
  */
 
-object GameData {
+object GameData { // extends JsonDeserializer[GameData] {
   def apply( gameSession:GameSession ):GameData = new GameData(
     gameSession.controller.game,
     gameSession.controller.hasUndo,
@@ -22,24 +23,40 @@ object GameData {
     getBuildablePoints( gameSession.controller.game )
   )
 
-  private def getBuildablePoints( game:Game ):List[PlacementPoint] = game.state match {
+  private def getBuildablePoints( game:Game ):List[PlacementPointID] = (game.state match {
     case RobberPlaceState( _ ) => RobberPlacement.getBuildablePoints( game, game.player.id )
     case BuildInitSettlementState() => SettlementPlacement.getBuildablePoints( game, game.player.id, any = true )
     case BuildInitRoadState( vID ) => game.getBuildableRoadSpotsForSettlement( vID )
     case BuildState( structure ) => structure.getBuildablePoints( game, game.player.id )
     case DevRoadBuildingState( _, _ ) => RoadPlacement.getBuildablePoints( game, game.player.id )
     case _ => Nil
+  }).map {
+    case h:Hex => HexPlacementPoint( h.id )
+    case e:Edge => EdgePlacementPoint( e.id )
+    case v:Vertex => VertexPlacementPoint( v.id )
   }
+
+  /*override def fromJson( json:JsValue ):GameData = GameData(
+    game = ( json \ "game" ).as[Game]
+  )*/
 }
 
 
 case class GameData( game:Game,
                      hasUndo:Boolean,
                      hasRedo:Boolean,
-                     resourceImages:Map[Resource, List[String]],
-                     buildablePoints:List[PlacementPoint],
+                     resourceImages:Map[Resource, List[Int]],
+                     buildablePoints:List[PlacementPointID],
                      resourceCounter:mutable.Map[Resource, Int] = mutable.Map(),
-                   ) {
+                   ) extends JsonSerializable {
+
+  override def toJson:JsValue = Json.obj(
+    "game" -> Json.toJson( game ),
+    "hasUndo" -> Json.toJson( hasUndo ),
+    "hasRedo" -> Json.toJson( hasRedo ),
+    "resourceImages" -> Json.toJson( resourceImages ),
+    "buildablePoints" -> Json.toJson( buildablePoints.map( _.toJson ) )
+  )
 
   def gameField:GameField = game.gameField
 
@@ -64,8 +81,9 @@ case class GameData( game:Game,
         val i = resourceCounter.getOrElse( area.resource, 0 )
         resourceCounter( area.resource ) = i + 1
         //print( s" i: $i next: ${resourceCounter( area.resource )}" )
+
         resourceImages.getOrElse( area.resource, List.empty ).lift( i ).useOrElse(
-          s => s"${area.resource.name.toLowerCase}/$s",
+          s => s"${area.resource.name.toLowerCase}/$s.png",
           s"${area.resource.name.toLowerCase}.png"
         )
     }
