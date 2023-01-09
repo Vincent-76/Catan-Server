@@ -1,6 +1,6 @@
 package model.socketcommands
 
-import model.{ GameData, GameSession, SocketCommand }
+import model.{ GameSession, SocketCommand }
 import play.api.libs.json.JsValue
 
 import scala.util.{ Success, Try }
@@ -9,9 +9,9 @@ import scala.util.{ Success, Try }
  * @author Vincent76
  */
 
-object GameCommand extends SocketCommand( "Game" ) {
+object GameCommand extends SocketCommand( "game" ) {
 
-  override def execute( gameSession:GameSession ):Try[JsValue] =
+  override def exec( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
     Success( gameSession.controller.game.toJson )
 
 }

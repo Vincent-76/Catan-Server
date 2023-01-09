@@ -43,11 +43,11 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
 
 
     def gameData( ):Action[AnyContent] = Action { implicit request:Request[AnyContent] =>
-    sessionController.getGameSession( request.session ) match {
-      case Some( gameSession ) => Ok( GameData( gameSession ).toJson )
-      case None => Ok( Json.obj() )
+      sessionController.getGameSession( request.session ) match {
+        case Some( gameSession ) => Ok( GameData( request.session.get( "sessionID" ).get, gameSession ).toJson )
+        case None => Ok( Json.obj() )
+      }
     }
-  }
 
 
 
@@ -55,9 +55,9 @@ class GameController @Inject()( controllerComponents:ControllerComponents,
     val gameSession = sessionController.getGameSession( request.session )
     gameSession.foreach( s => println( s.controller.game.state.getClass.getSimpleName ) )
     if( gameSession.isEmpty || GameController.SETUP_STATES.exists( _.isInstance( gameSession.get.controller.game.state ) ) )
-      Ok( views.html.game_setup( gameSession.map( GameData( _ ) ), errors ) )
+      Ok( views.html.game_setup( gameSession.map( GameData( request.session.get( "sessionID" ).get, _ ) ), errors ) )
     else
-      Ok( views.html.game( GameData( gameSession.get ), info, errors ) )
+      Ok( views.html.game( GameData( request.session.get( "sessionID" ).get, gameSession.get ), info, errors ) )
   }
 
   private def showGameErrors( requestHeader:RequestHeader, errors:Map[String, List[String]] ):Result = showGame(

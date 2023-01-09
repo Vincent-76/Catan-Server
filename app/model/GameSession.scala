@@ -2,9 +2,10 @@ package model
 
 import com.aimit.htwg.catan.controller.Controller
 import com.aimit.htwg.catan.model.GameField.Field
-import com.aimit.htwg.catan.model.{ Hex, Resource }
+import com.aimit.htwg.catan.model.{ Hex, PlayerID, Resource }
 import util.RichIterable
 
+import java.util.UUID
 import scala.util.Random
 
 /**
@@ -12,7 +13,10 @@ import scala.util.Random
  */
 
 object GameSession {
-  def apply( controller:Controller ):GameSession = GameSession(
+  def apply( hostID:String, controller:Controller ):GameSession = new GameSession(
+    UUID.randomUUID().toString,
+    hostID,
+    Map( hostID -> None ),
     controller,
     getShuffledImageIDs( controller.game.gameField.field )
   )
@@ -55,10 +59,22 @@ object GameSession {
   }*/
 }
 
-case class GameSession( controller:Controller,
+case class GameSession( gameID:String,
+                        hostID: String,
+                        players:Map[String, Option[PlayerID]],
+                        controller:Controller,
                         resourceImages:Map[Resource, List[Int]],
                         timestamp:Long = java.time.Instant.now().getEpochSecond,
                       ) {
 
-  def update():GameSession = copy( controller, resourceImages )
+  def update():GameSession = copy( timestamp = java.time.Instant.now().getEpochSecond )
+
+  def addPlayer( sessionID:String ):GameSession =
+    copy( players = players + ( sessionID -> None ), timestamp = java.time.Instant.now().getEpochSecond )
+
+  def setPlayerID( sessionID:String, playerID:PlayerID ):GameSession =
+    copy( players = players + ( sessionID -> Some( playerID ) ), timestamp = java.time.Instant.now().getEpochSecond )
+
+  def removePlayer( sessionID:String ):GameSession =
+    copy( players = players.removed( sessionID ), timestamp = java.time.Instant.now().getEpochSecond )
 }

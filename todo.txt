@@ -14,3 +14,5 @@
 - Largest Army / Longest Road
 
 - better compass
+
+- serializable info objects

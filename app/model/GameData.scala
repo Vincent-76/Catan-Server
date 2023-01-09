@@ -15,7 +15,10 @@ import scala.math.cos
  */
 
 object GameData { // extends JsonDeserializer[GameData] {
-  def apply( gameSession:GameSession ):GameData = new GameData(
+  def apply( sessionID:String, gameSession:GameSession ):GameData = new GameData(
+    gameSession.gameID,
+    gameSession.hostID == sessionID,
+    gameSession.players.get( sessionID ).flatten,
     gameSession.controller.game,
     gameSession.controller.hasUndo,
     gameSession.controller.hasRedo,
@@ -42,7 +45,10 @@ object GameData { // extends JsonDeserializer[GameData] {
 }
 
 
-case class GameData( game:Game,
+case class GameData( gameID:String,
+                     host:Boolean,
+                     playerID:Option[PlayerID],
+                     game:Game,
                      hasUndo:Boolean,
                      hasRedo:Boolean,
                      resourceImages:Map[Resource, List[Int]],
@@ -51,6 +57,9 @@ case class GameData( game:Game,
                    ) extends JsonSerializable {
 
   override def toJson:JsValue = Json.obj(
+    "gameID" -> Json.toJson( gameID ),
+    "host" -> Json.toJson( host ),
+    "playerID" -> Json.toJson( playerID ),
     "game" -> Json.toJson( game ),
     "hasUndo" -> Json.toJson( hasUndo ),
     "hasRedo" -> Json.toJson( hasRedo ),

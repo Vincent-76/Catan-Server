@@ -49,10 +49,13 @@ GET /game/roll_the_dices			controllers.GameController.rollTheDices()
 GET /game/use_dev_card/:devCard		controllers.GameController.useDevCard( devCard:String )
 
 
+GET /init							controllers.SocketController.init()
+
+
 GET /gameData						controllers.GameController.gameData()
 
 
-GET /websocket						controllers.SocketController.webSocket
+GET /websocket/:sessionID			controllers.SocketController.webSocket( sessionID:String )
 
 
 # Map static resources from the /public folder to the /assets URL path
