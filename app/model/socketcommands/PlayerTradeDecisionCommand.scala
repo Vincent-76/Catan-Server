@@ -11,6 +11,6 @@ import scala.util.Try
  */
 object PlayerTradeDecisionCommand extends TypedGameSocketCommand( "playerTradeDecision", InputForm.boolForm, SocketCommandScope.Always ) {
 
-  override def typedGameExecute( gameSession:GameSession, sessionID:String, data:FormData[Boolean] ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.playerTradeDecision( data.value ) ) )
+  override def typedGameExecute( gameSession:GameSession, sessionID:String, decision:Boolean ):Try[JsValue] =
+    controllerAction( gameSession, _.action( _.playerTradeDecision( decision ) ) )
 }

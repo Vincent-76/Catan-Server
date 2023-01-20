@@ -9,8 +9,8 @@ import scala.util.Try
 /**
  * @author Vincent76
  */
-object PlayerTradeCommand extends TypedGameSocketCommand( "playerTrade", InputForm.jsonForm[PlayerID], SocketCommandScope.Turn ) {
+object RobberStealCommand extends TypedGameSocketCommand( "robberSteal", InputForm.jsonForm[PlayerID], SocketCommandScope.Turn ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, pID:PlayerID ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.playerTrade( pID ) ) )
+    controllerAction( gameSession, _.action( _.robberStealFromPlayer( pID ) ) )
 }

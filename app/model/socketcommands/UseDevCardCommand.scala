@@ -1,15 +1,15 @@
 package model.socketcommands
 
 import com.aimit.htwg.catan.model.DevelopmentCard
-import model.{ FormData, GameSession, GameSocketCommand, InputForm, InvalidInput, SocketCommandScope, TypedGameSocketCommand }
+import model.{ GameSession, InputForm, SocketCommandScope, TypedGameSocketCommand }
 import play.api.libs.json.JsValue
 
-import scala.util.{ Failure, Try }
+import scala.util.Try
 
 /**
  * @author Vincent76
  */
-object UseDevCardCommand extends TypedGameSocketCommand[FormData[DevelopmentCard]]( "useDevCard", InputForm.componentForm( DevelopmentCard ), SocketCommandScope.Turn ) {
-  override def typedGameExecute( gameSession:GameSession, sessionID:String, data:FormData[DevelopmentCard] ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.useDevCard( data.value ) ) )
+object UseDevCardCommand extends TypedGameSocketCommand( "useDevCard", InputForm.componentForm( DevelopmentCard ), SocketCommandScope.Turn ) {
+  override def typedGameExecute( gameSession:GameSession, sessionID:String, devCard:DevelopmentCard ):Try[JsValue] =
+    controllerAction( gameSession, _.action( _.useDevCard( devCard ) ) )
 }

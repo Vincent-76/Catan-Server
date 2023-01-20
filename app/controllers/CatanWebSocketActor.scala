@@ -23,6 +23,8 @@ object CatanWebSocketActor {
   NewGameCommand.init()
   CreateGameCommand.init()
   JoinGameCommand.init()
+  UndoCommand.init()
+  RedoCommand.init()
 
   GameCommand.init()
   GameValuesCommand.init()
@@ -37,18 +39,19 @@ object CatanWebSocketActor {
   SetInitBeginnerStateCommand.init()
   DiceOutBeginnerCommand.init()
   SetBeginnerCommand.init()
+  RollTheDicesCommand.init()
   PlaceRobberCommand.init()
   UseDevCardCommand.init()
   BuildCommand.init()
   AbortPlayerTradeCommand.init()
   BankTradeCommand.init()
   BuyDevCardCommand.init()
-  DropResourceCardsToRobberCommand.init()
+  DropHandCardsCommand.init()
   EndTurnCommand.init()
   MonopolyActionCommand.init()
   PlayerTradeCommand.init()
   PlayerTradeDecisionCommand.init()
-  RobberStealFromPlayerCommand.init()
+  RobberStealCommand.init()
   SetBuildStateCommand.init()
   SetPlayerTradeStateCommand.init()
   YearOfPlentyActionCommand.init()
@@ -121,8 +124,9 @@ class ActorHolder( val sessionID:String,
   def setActor( actor:CatanWebSocketActor ):Unit = {
     this.actor = Some( actor )
     updateLastUsed()
-    if( queue.nonEmpty )
-      actor.send( "[" + queue.map( e => s"\"${e._1}|${e._2}\"" ).mkString( "," ) + "]" )
+    if( queue.nonEmpty ) {
+      actor.send( Json.stringify( Json.toJson( queue.map( e => s"${e._1}|${e._2}" ) ) ) )
+    }
   }
 
   def unsetActor():Unit =

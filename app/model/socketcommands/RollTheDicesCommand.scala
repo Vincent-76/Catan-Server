@@ -8,8 +8,8 @@ import scala.util.Try
 /**
  * @author Vincent76
  */
-object EndTurnCommand extends GameSocketCommand( "endTurn", SocketCommandScope.Turn ) {
+object RollTheDicesCommand extends GameSocketCommand( "rollTheDices", SocketCommandScope.Turn ) {
 
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.endTurn() ) )
+    controllerAction( gameSession, _.action( _.rollTheDices() ) )
 }

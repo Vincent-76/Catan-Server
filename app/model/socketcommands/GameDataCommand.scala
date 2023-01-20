@@ -1,7 +1,8 @@
 package model.socketcommands
 
-import model.{ GameData, GameSession, GameSocketCommand, SocketCommand, SocketCommandScope }
-import play.api.libs.json.JsValue
+import controllers.SessionController
+import model.{ GameData, GameSession, SocketCommand }
+import play.api.libs.json.{ JsNull, JsValue }
 
 import scala.util.{ Success, Try }
 
@@ -9,9 +10,12 @@ import scala.util.{ Success, Try }
  * @author Vincent76
  */
 
-object GameDataCommand extends GameSocketCommand( "gameData", SocketCommandScope.Always ) {
+object GameDataCommand extends SocketCommand( "gameData" ) {
 
-  override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    Success( GameData( sessionID, gameSession ).toJson )
+  override def execute( sessionController:SessionController, sessionID:String, gameSession:Option[GameSession], data:String ):Try[JsValue] =
+    gameSession match {
+      case Some( gameSession ) => Success( GameData( sessionID, gameSession ).toJson )
+      case None => Success( JsNull )
+    }
 
 }

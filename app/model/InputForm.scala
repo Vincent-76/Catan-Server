@@ -13,8 +13,6 @@ import scala.util.{ Failure, Success, Try }
  * @author Vincent76
  */
 
-case class FormData[T]( value:T )
-
 object InputForm {
 
   implicit class RichMapping[T]( m:Mapping[T] ) {
@@ -59,38 +57,34 @@ object InputForm {
 
 
 
-  def boolForm:Form[FormData[Boolean]] = Form( mapping(
-    "value" -> booleanMapping
-  )( FormData.apply )( FormData.unapply ) )
+  def boolForm:Form[Boolean] =
+    Form( booleanMapping )
 
 
-  def positiveIntForm:Form[FormData[Int]] = intForm( _ >= 0 )
+  def positiveIntForm:Form[Int] = intForm( _ >= 0 )
 
-  def intForm( validation:Int => Boolean = _ => true ):Form[FormData[Int]] = Form( mapping(
-    "value" -> intMapping( validation )
-  )( FormData.apply )( FormData.unapply ) )
-
-
-  def componentForm[T <: NamedComponentImpl]( component:NamedComponent[T] ):Form[FormData[T]] = Form( mapping(
-    "value" -> component.mapping
-  )( FormData.apply )( FormData.unapply ) )
+  def intForm( validation:Int => Boolean = _ => true ):Form[Int] =
+    Form( intMapping( validation ) )
 
 
-  def jsonForm[T]( implicit reads:Reads[T], writes:Writes[T] ):Form[FormData[T]] = Form( mapping(
-    "value" -> jsonMapping[T]
-  )( FormData.apply )( FormData.unapply ) )
+  def componentForm[T <: NamedComponentImpl]( component:NamedComponent[T] ):Form[T] =
+    Form( componentMapping( component ) )
 
 
-  def doubleForm[T1, T2]( m1:Mapping[T1], m2:Mapping[T2] ):Form[(T1, T2)] = Form( mapping(
-    "_1" -> m1,
-    "_2" -> m2
+  def jsonForm[T]( implicit reads:Reads[T], writes:Writes[T] ):Form[T] =
+    Form( jsonMapping[T] )
+
+
+  def doubleForm[T1, T2]( v1:(String, Mapping[T1]), v2:(String, Mapping[T2]) ):Form[(T1, T2)] = Form( mapping(
+    v1,
+    v2
   )( Tuple2.apply )( Tuple2.unapply ) )
 
 
-  def tripleForm[T1, T2, T3]( m1:Mapping[T1], m2:Mapping[T2], m3:Mapping[T3] ):Form[(T1, T2, T3)] = Form( mapping(
-    "_1" -> m1,
-    "_2" -> m2,
-    "_3" -> m3
+  def tripleForm[T1, T2, T3]( v1:(String, Mapping[T1]), v2:(String, Mapping[T2]), v3:(String, Mapping[T3]) ):Form[(T1, T2, T3)] = Form( mapping(
+    v1,
+    v2,
+    v3
   )( Tuple3.apply )( Tuple3.unapply ) )
 }
 

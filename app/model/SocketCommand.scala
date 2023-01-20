@@ -20,7 +20,7 @@ import scala.util.{ Failure, Success, Try }
 
 object SocketCommand extends NamedComponent[SocketCommand] {
   def bindData[T, R]( form:Form[T], data:String, f:T => R ):Try[R] = Try {
-    f( form.bind( Json.parse( data ), Form.FromJsonMaxChars ).get )
+    f( form.bind( Try{ Json.parse( data ) }.getOrElse( JsString( data ) ), Form.FromJsonMaxChars ).get )
   }
 
   def updateChanges( gameSession:GameSession, o:Game, n:Game ):Unit = List(
