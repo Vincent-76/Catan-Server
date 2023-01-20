@@ -40,6 +40,18 @@ object CatanWebSocketActor {
   PlaceRobberCommand.init()
   UseDevCardCommand.init()
   BuildCommand.init()
+  AbortPlayerTradeCommand.init()
+  BankTradeCommand.init()
+  BuyDevCardCommand.init()
+  DropResourceCardsToRobberCommand.init()
+  EndTurnCommand.init()
+  MonopolyActionCommand.init()
+  PlayerTradeCommand.init()
+  PlayerTradeDecisionCommand.init()
+  RobberStealFromPlayerCommand.init()
+  SetBuildStateCommand.init()
+  SetPlayerTradeStateCommand.init()
+  YearOfPlentyActionCommand.init()
 
 
 
