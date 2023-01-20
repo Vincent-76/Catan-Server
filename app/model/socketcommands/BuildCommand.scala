@@ -10,5 +10,5 @@ import scala.util.Try
  */
 object BuildCommand extends TypedGameSocketCommand( "build", InputForm.positiveIntForm, SocketCommandScope.Turn ) {
   override def typedGameExecute( gameSession:GameSession, sessionID:String, id:Int ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.build( id ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.build( id ) ) )
 }

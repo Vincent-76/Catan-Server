@@ -11,5 +11,5 @@ import scala.util.Try
 object EndTurnCommand extends GameSocketCommand( "endTurn", SocketCommandScope.Turn ) {
 
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.endTurn() ) )
+    controllerAction( gameSession, sessionID, _.action( _.endTurn() ) )
 }

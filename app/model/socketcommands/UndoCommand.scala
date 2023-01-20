@@ -11,5 +11,5 @@ import scala.util.Try
 object UndoCommand extends GameSocketCommand( "undo", SocketCommandScope.Turn ) {
 
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    controllerAction( gameSession, _.undoAction(), undo = true )
+    controllerAction( gameSession, sessionID, _.undoAction(), undo = true )
 }

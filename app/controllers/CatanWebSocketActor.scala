@@ -93,18 +93,24 @@ object CatanWebSocketActor {
   }
 
 
+  def update( sessionID:String, update:String, data:String ):Unit =
+    actors.get( sessionID ).foreach( _.update( update, data) )
+
+  def info( sessionID:String, data:String ):Unit =
+    update( sessionID, "info", data )
+
+
   private def gameSessionActors( gameSession:GameSession, source:Option[String] = None, f:ActorHolder => Unit ):Unit =
     gameSession.players.keySet.filterNot( source.contains( _ ) ).map( actors.get( _ ) ).foreach( _.foreach( f ) )
 
   def broadcast( gameSession:GameSession, cmd:SocketCommand, data:String = "", source:Option[String] = None ):Unit =
     gameSessionActors( gameSession, source, _.performCommand( s"?$cmd", cmd, data ) )
 
-  def broadcastInfo( gameSession:GameSession, info:String, source:Option[String] = None ):Unit =
-    broadcastEvent( gameSession, "info", info, source )
+  def broadcastUpdate( gameSession:GameSession, update:String, data:String, source:Option[String] = None ):Unit =
+    gameSessionActors( gameSession, source, _.update( update, data ) )
 
-  def broadcastEvent( gameSession:GameSession, event:String, data:String, source:Option[String] = None ):Unit = {
-    gameSessionActors( gameSession, source, _.event( event, data ) )
-  }
+  def broadcastInfo( gameSession:GameSession, info:String, source:Option[String] = None ):Unit =
+    broadcastUpdate( gameSession, "info", info, source )
 
 }
 
@@ -149,8 +155,8 @@ class ActorHolder( val sessionID:String,
     //copy( queue = newQueue, nextID = nextID + 1 )
   }
 
-  def event( event:String, data:String ):Unit =
-    send( s"?$event|$data" )
+  def update( update:String, data:String ):Unit =
+    send( s"?$update|$data" )
 
   def reply( id:String, data:String ):Unit =
     send( s"$id|$data" )

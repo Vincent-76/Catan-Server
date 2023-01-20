@@ -17,7 +17,7 @@ object AddPlayerCommand extends TypedSocketCommand[AddPlayer]( "addPlayer", AddP
   override def typedExecute( sessionController:SessionController, sessionID:String, gameSession:Option[GameSession], data:AddPlayer ):Try[JsValue] = gameSession match {
     case Some( gameSession ) =>
       if( gameSession.players.get( sessionID ).use( o => o.isDefined && o.get.isEmpty ) ) {
-        controllerAction( gameSession, _.action( _.addPlayer( data.color, data.name ) ), update = false )
+        controllerAction( gameSession, sessionID, _.action( _.addPlayer( data.color, data.name ) ), update = false )
         sessionController.setPlayerID( gameSession, sessionID )
         CatanWebSocketActor.broadcast( gameSession, GameDataCommand )
         Success( Json.obj() )

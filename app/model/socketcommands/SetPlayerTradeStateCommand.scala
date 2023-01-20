@@ -16,5 +16,5 @@ object SetPlayerTradeStateCommand extends
   ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, data:(ResourceCards, ResourceCards) ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.setPlayerTradeState( data._1, data._2 ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.setPlayerTradeState( data._1, data._2 ) ) )
 }

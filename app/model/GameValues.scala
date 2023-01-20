@@ -33,7 +33,7 @@ case class GameValues( minPlayers:Int,
                        unspecifiedPortFactor:Int,
                        specifiedPortFactor:Int,
                        maxPlayerNameLength:Int,
-                       usableDevCards:Set[DevelopmentCard],
+                       devCards:Map[DevelopmentCard, (Boolean, String)],
                        bonusCardVictoryPoints:Map[BonusCard, Int]
                      ) extends JsonSerializable {
 
@@ -46,7 +46,10 @@ case class GameValues( minPlayers:Int,
     "unspecifiedPortFactor" -> Json.toJson( unspecifiedPortFactor ),
     "specifiedPortFactor" -> Json.toJson( specifiedPortFactor ),
     "maxPlayerNameLength" -> Json.toJson( maxPlayerNameLength ),
-    "usableDevCards" -> Json.toJson( usableDevCards ),
+    "devCards" -> devCards.toJsonC( Json.toJson( _ ), v => Json.obj(
+      "usable" -> Json.toJson( v._1 ),
+      "desc" -> Json.toJson( v._2 )
+    ) ),
     "bonusCardVictoryPoints" -> bonusCardVictoryPoints.toJson // Json.toJson( bonusCardVictoryPoints )
   )
 }

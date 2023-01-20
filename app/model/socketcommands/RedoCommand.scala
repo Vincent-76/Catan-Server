@@ -11,5 +11,5 @@ import scala.util.Try
 object RedoCommand extends GameSocketCommand( "redo", SocketCommandScope.Turn ) {
 
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    controllerAction( gameSession, _.redoAction() )
+    controllerAction( gameSession, sessionID, _.redoAction() )
 }

@@ -11,5 +11,5 @@ import scala.util.Try
 object AbortPlayerTradeCommand extends GameSocketCommand( "abortPlayerTrade", SocketCommandScope.Turn ) {
 
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.abortPlayerTrade() ) )
+    controllerAction( gameSession, sessionID, _.action( _.abortPlayerTrade() ) )
 }

@@ -10,5 +10,5 @@ import scala.util.Try
  */
 object PlaceRobberCommand extends TypedGameSocketCommand( "placeRobber", InputForm.positiveIntForm, SocketCommandScope.Turn ) {
   override def typedGameExecute( gameSession:GameSession, sessionID:String, id:Int ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.placeRobber( id ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.placeRobber( id ) ) )
 }

@@ -12,5 +12,5 @@ import scala.util.Try
 object RobberStealCommand extends TypedGameSocketCommand( "robberSteal", InputForm.jsonForm[PlayerID], SocketCommandScope.Turn ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, pID:PlayerID ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.robberStealFromPlayer( pID ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.robberStealFromPlayer( pID ) ) )
 }

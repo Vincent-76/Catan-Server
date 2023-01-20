@@ -13,5 +13,5 @@ import scala.util.Try
 object MonopolyActionCommand extends TypedGameSocketCommand( "monopolyAction", InputForm.componentForm( Resource ), SocketCommandScope.Turn ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, resource:Resource ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.monopolyAction( resource ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.monopolyAction( resource ) ) )
 }

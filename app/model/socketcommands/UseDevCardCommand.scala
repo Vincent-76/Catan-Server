@@ -11,5 +11,5 @@ import scala.util.Try
  */
 object UseDevCardCommand extends TypedGameSocketCommand( "useDevCard", InputForm.componentForm( DevelopmentCard ), SocketCommandScope.Turn ) {
   override def typedGameExecute( gameSession:GameSession, sessionID:String, devCard:DevelopmentCard ):Try[JsValue] =
-    controllerAction( gameSession, _.action( _.useDevCard( devCard ) ) )
+    controllerAction( gameSession, sessionID, _.action( _.useDevCard( devCard ) ) )
 }

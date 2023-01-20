@@ -10,6 +10,6 @@ import scala.util.Try
  */
 object DiceOutBeginnerCommand extends GameSocketCommand( "diceOutBeginner", SocketCommandScope.Host ) {
   override def gameExecute( gameSession:GameSession, sessionID:String, data:String ):Try[JsValue] = {
-    controllerAction( gameSession, _.action( _.diceOutBeginner() ) )
+    controllerAction( gameSession, sessionID, _.action( _.diceOutBeginner() ) )
   }
 }

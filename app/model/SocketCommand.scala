@@ -128,7 +128,7 @@ abstract class SocketCommand( name:String ) extends NamedComponentImpl( name ) {
   def checkBroadcast[T]( gameSession:GameSession, o1:T, o2:T, socketCommand:SocketCommand ):Unit =
     if( o1 != o2 ) CatanWebSocketActor.broadcast( gameSession, socketCommand )
 
-  def controllerAction( gameSession:GameSession, f:Controller => Try[Option[Info]], broadcast:List[SocketCommand] = Nil, undo:Boolean = false, update:Boolean = true ):Try[JsValue] = {
+  def controllerAction( gameSession:GameSession, sessionID:String, f:Controller => Try[Option[Info]], broadcast:List[SocketCommand] = Nil, undo:Boolean = false, update:Boolean = true ):Try[JsValue] = {
     val r = gameSession.controller.synchronized {
       val oldGame = gameSession.controller.game
       val result = f( gameSession.controller )
@@ -152,11 +152,16 @@ abstract class SocketCommand( name:String ) extends NamedComponentImpl( name ) {
           //println( "NewJson: \n" + Json.stringify( newJson ) )
           val difference = SocketCommand.jsonDiff( oldJson, newJson )
           if( difference.nonEmpty )
-            CatanWebSocketActor.broadcastEvent( gameSession, "gameUpdate", Json.stringify( difference.toJson ) )
+            CatanWebSocketActor.broadcastUpdate( gameSession, "gameUpdate", Json.stringify( difference.toJson ) )
           CatanWebSocketActor.broadcast( gameSession, GameStatusCommand )
         }
         broadcast.foreach( CatanWebSocketActor.broadcast( gameSession, _ ) )
-        info.foreach( info => CatanWebSocketActor.broadcastInfo( gameSession, SocketCommand.getInfo( gameSession.controller, info ).mkString( "\n" ) ) )
+        info.foreach( info =>
+          if( info.exclusive )
+            CatanWebSocketActor.info( sessionID, Json.stringify( info.toJson ) )
+          else CatanWebSocketActor.broadcastInfo( gameSession, Json.stringify( info.toJson ) )
+        )
+        //info.foreach( info => CatanWebSocketActor.broadcastInfo( gameSession, SocketCommand.getInfo( gameSession.controller, info ).mkString( "\n" ) ) )
         Success( Json.obj() )
       case Failure( t ) => Failure( SocketError.fromControllerError( gameSession.controller, t ) )
     }
