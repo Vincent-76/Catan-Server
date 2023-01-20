@@ -17,45 +17,45 @@ case class FormData[T]( value:T )
 
 object InputForm {
 
-  private def tryTransform[T, R]( t:T, f:T => R ):Try[R] = Try{
-    f( t )
-  }.transform( Success.apply, _ => Failure( InvalidInput( t.toString ) ) )
+  implicit class RichMapping[T]( m:Mapping[T] ) {
+    def tryTransform[R]( f:T => R, t:R => T, default:T ):Mapping[Try[R]] = m.transform[Try[R]](
+      i => Try{ f( i ) }.transform( Success.apply, _ => Failure( InvalidInput( i.toString ) ) ),
+      _.map( t ).getOrElse( default )
+    )
+  }
+
+  implicit class TryMapping[T]( m:Mapping[Try[T]] ) {
+    def tryValidate( validate:T => Boolean = _ => true ):Mapping[Try[T]] = m.verifying( Constraint( ( v:Try[T] ) => v match {
+      case Success( value:T ) =>
+        if( validate( value ) )
+          Valid
+        else Invalid( InvalidInput( value.toString ).getMessage )
+      case Failure( t ) => Invalid( t.getMessage )
+    } ) )
+
+    def untryTransform:Mapping[T] = m.transform( _.get, Success.apply )
+  }
+
 
   val booleanMapping:Mapping[Boolean] = text
-    .transform[Try[Boolean]](
-      s => tryTransform[String, Boolean]( s, _.toBoolean ),
-      _.map( _.toString ).getOrElse( "" )
-    )
-    .verifying( Constraint[Try[Boolean]] {
-      case Success( _ ) => Valid
-      case Failure( t ) => Invalid( t.getMessage )
-    } )
-    .transform[Boolean]( _.get, Success.apply )
+    .tryTransform[Boolean]( _.toBoolean, _.toString, "" )
+    .tryValidate()
+    .untryTransform
 
-  def intMapping( validation:Int => Boolean ):Mapping[Int] = text
-    .transform[Try[Int]](
-      s => tryTransform[String, Int]( s, _.toInt ),
-      _.map( _.toString ).getOrElse( "" )
-    )
-    .verifying( Constraint[Try[Int]] {
-      case Success( i:Int ) =>
-        if( validation( i ) )
-          Valid
-        else Invalid( InvalidInput( i.toString ).getMessage )
-      case Failure( t ) => Invalid( t.getMessage )
-    } )
-    .transform[Int]( _.get, Success.apply )
+  def intMapping( validate:Int => Boolean ):Mapping[Int] = text
+    .tryTransform[Int]( _.toInt, _.toString, "" )
+    .tryValidate( validate )
+    .untryTransform
+
+  def componentMapping[T <: NamedComponentImpl]( component:NamedComponent[T] ):Mapping[T] = text
+    .tryTransform[T]( component.of( _ ).get, _.name, "" )
+    .tryValidate()
+    .untryTransform
 
   def jsonMapping[T]( implicit reads:Reads[T], writes:Writes[T] ):Mapping[T] = text
-    .transform[Try[T]](
-      s => tryTransform[String, T]( s, s => Json.parse( s ).as[T] ),
-      _.map( e => Json.stringify( Json.toJson( e ) ) ).getOrElse( "{}" )
-    )
-    .verifying( Constraint[Try[T]] {
-      case Success( _ ) => Valid
-      case Failure( t ) => Invalid( t.getMessage )
-    } )
-    .transform[T]( _.get, Success.apply )
+    .tryTransform[T]( Json.parse( _ ).as[T], v => Json.stringify( Json.toJson( v ) ), "{}" )
+    .tryValidate()
+    .untryTransform
 
 
 
@@ -71,7 +71,7 @@ object InputForm {
   )( FormData.apply )( FormData.unapply ) )
 
 
-  def singleForm[T <: NamedComponentImpl]( component:NamedComponent[T] ):Form[FormData[T]] = Form( mapping(
+  def componentForm[T <: NamedComponentImpl]( component:NamedComponent[T] ):Form[FormData[T]] = Form( mapping(
     "value" -> component.mapping
   )( FormData.apply )( FormData.unapply ) )
 
@@ -97,6 +97,7 @@ object InputForm {
 
 
 abstract class InputForm {
+
   implicit class NamedComponentMapping[I <: NamedComponentImpl]( component:NamedComponent[I] ) {
     def mapping:Mapping[I] = text
       .verifying( ValidationError.Invalid.name, s => component.hasImpl( s ) )

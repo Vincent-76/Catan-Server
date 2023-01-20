@@ -10,7 +10,7 @@ import scala.util.Try
 /**
  * @author Vincent76
  */
-object MonopolyActionCommand extends TypedGameSocketCommand( "monopolyAction", InputForm.singleForm( Resource ), SocketCommandScope.Turn ) {
+object MonopolyActionCommand extends TypedGameSocketCommand( "monopolyAction", InputForm.componentForm( Resource ), SocketCommandScope.Turn ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, data:FormData[Resource] ):Try[JsValue] =
     controllerAction( gameSession, _.action( _.monopolyAction( data.value ) ) )

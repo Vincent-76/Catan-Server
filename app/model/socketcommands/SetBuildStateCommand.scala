@@ -9,7 +9,7 @@ import scala.util.Try
 /**
  * @author Vincent76
  */
-object SetBuildStateCommand extends TypedGameSocketCommand( "setBuildState", InputForm.singleForm( StructurePlacement ), SocketCommandScope.Turn ) {
+object SetBuildStateCommand extends TypedGameSocketCommand( "setBuildState", InputForm.componentForm( StructurePlacement ), SocketCommandScope.Turn ) {
 
   override def typedGameExecute( gameSession:GameSession, sessionID:String, data:FormData[StructurePlacement] ):Try[JsValue] =
     controllerAction( gameSession, _.action( _.setBuildState( data.value ) ) )

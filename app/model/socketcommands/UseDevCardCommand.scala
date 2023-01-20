@@ -9,7 +9,7 @@ import scala.util.{ Failure, Try }
 /**
  * @author Vincent76
  */
-object UseDevCardCommand extends TypedGameSocketCommand[FormData[DevelopmentCard]]( "useDevCard", InputForm.singleForm( DevelopmentCard ), SocketCommandScope.Turn ) {
+object UseDevCardCommand extends TypedGameSocketCommand[FormData[DevelopmentCard]]( "useDevCard", InputForm.componentForm( DevelopmentCard ), SocketCommandScope.Turn ) {
   override def typedGameExecute( gameSession:GameSession, sessionID:String, data:FormData[DevelopmentCard] ):Try[JsValue] =
     controllerAction( gameSession, _.action( _.useDevCard( data.value ) ) )
 }
