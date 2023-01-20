@@ -15,12 +15,12 @@
 			<img src="@routes.Assets.versioned( "images/download.png" )" alt="Download" />
 		</a>
 		<div class="col"></div>
-		@if( gameData.get.hasUndo ) {
+		@if( gameData.get.gameStatus.hasUndo ) {
 			<a id="undo" class="button asyncButton navButton" href="@routes.GameController.undo()">
 				<img src="@routes.Assets.versioned( "images/undo.png" )" alt="Undo" />
 			</a>
 		}
-		@if( gameData.get.hasRedo ) {
+		@if( gameData.get.gameStatus.hasRedo ) {
 			<a id="redo" class="button asyncButton navButton" href="@routes.GameController.redo()">
 				<img src="@routes.Assets.versioned( "images/redo.png" )" alt="Redo" />
 			</a>

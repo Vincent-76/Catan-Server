@@ -2,7 +2,7 @@ package model.socketcommands
 
 import com.aimit.htwg.catan.model.state.InitPlayerState
 import controllers.SessionController
-import model.{ GameAlreadyFull, GameData, NoGame, NotPossibleAnymore, SocketCommand }
+import model.{ GameAlreadyFull, GameData, NoGame, NotPossibleAnymore, SocketCommand, SocketCommandScope }
 import play.api.libs.json.JsValue
 
 import scala.util.{ Failure, Success, Try }

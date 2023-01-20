@@ -103,7 +103,7 @@
 						</div>
 					</div>
 				}
-				@if( gameData.buildablePoints.exists( p => p.isInstanceOf[HexPlacementPoint] && p.id == hex.hID ) ) {
+				@if( gameData.gameStatus.buildablePoints.exists( p => p.isInstanceOf[HexPlacementPoint] && p.id == hex.hID ) ) {
 					<a href="@routes.GameController.placeRobber( hex.hID )" class="buildPlacementPoint asyncButton"></a>
 				}
 			</div>
@@ -126,7 +126,7 @@
 					<div class="placementBorder"></div>
 					<div class="placementContent @gameData.structureColorClass( edge.get.road )"></div>
 				</div>
-				@if( edge.isDefined && gameData.buildablePoints.exists( p => p.isInstanceOf[EdgePlacementPoint] && p.id == edge.get.eID ) ) {
+				@if( edge.isDefined && gameData.gameStatus.buildablePoints.exists( p => p.isInstanceOf[EdgePlacementPoint] && p.id == edge.get.eID ) ) {
 					<a href="@routes.GameController.build( edge.get.eID )" class="buildPlacementPoint asyncButton"></a>
 				}
 			</div>
@@ -163,7 +163,7 @@
 					  <div class="placementBorder"></div>
 					  <div class="placementContent @gameData.structureColorClass( vertex.flatMap( _.building ) )"></div>
 				  </div>
-				  @if( vertex.isDefined && gameData.buildablePoints.exists( p => p.isInstanceOf[VertexPlacementPoint] && p.id == vertex.get.vID ) ) {
+				  @if( vertex.isDefined && gameData.gameStatus.buildablePoints.exists( p => p.isInstanceOf[VertexPlacementPoint] && p.id == vertex.get.vID ) ) {
 					  <a href="@routes.GameController.build( vertex.get.vID )" class="buildPlacementPoint asyncButton"></a>
 				  }
 			  </div>

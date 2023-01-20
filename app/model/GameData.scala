@@ -1,8 +1,7 @@
 package model
 
 import com.aimit.htwg.catan.model.impl.fileio.JsonSerializable
-import com.aimit.htwg.catan.model.impl.placement.{ RoadPlacement, RobberPlacement, SettlementPlacement }
-import com.aimit.htwg.catan.model.state._
+import com.aimit.htwg.catan.model.impl.fileio.JsonFileIO.JsonMap
 import com.aimit.htwg.catan.model._
 import com.aimit.htwg.catan.util.RichOption
 import play.api.libs.json.{ JsValue, Json }
@@ -20,24 +19,10 @@ object GameData { // extends JsonDeserializer[GameData] {
     gameSession.hostID == sessionID,
     gameSession.players.get( sessionID ).flatten,
     gameSession.controller.game,
-    gameSession.controller.hasUndo,
-    gameSession.controller.hasRedo,
+    GameStatus( gameSession.controller ),
     gameSession.resourceImages,
-    getBuildablePoints( gameSession.controller.game )
+    GameValues( gameSession.controller.game )
   )
-
-  private def getBuildablePoints( game:Game ):List[PlacementPointID] = (game.state match {
-    case RobberPlaceState( _ ) => RobberPlacement.getBuildablePoints( game, game.player.id )
-    case BuildInitSettlementState() => SettlementPlacement.getBuildablePoints( game, game.player.id, any = true )
-    case BuildInitRoadState( vID ) => game.getBuildableRoadSpotsForSettlement( vID )
-    case BuildState( structure ) => structure.getBuildablePoints( game, game.player.id )
-    case DevRoadBuildingState( _, _ ) => RoadPlacement.getBuildablePoints( game, game.player.id )
-    case _ => Nil
-  }).map {
-    case h:Hex => HexPlacementPoint( h.id )
-    case e:Edge => EdgePlacementPoint( e.id )
-    case v:Vertex => VertexPlacementPoint( v.id )
-  }
 
   /*override def fromJson( json:JsValue ):GameData = GameData(
     game = ( json \ "game" ).as[Game]
@@ -49,10 +34,9 @@ case class GameData( gameID:String,
                      host:Boolean,
                      playerID:Option[PlayerID],
                      game:Game,
-                     hasUndo:Boolean,
-                     hasRedo:Boolean,
+                     gameStatus:GameStatus,
                      resourceImages:Map[Resource, List[Int]],
-                     buildablePoints:List[PlacementPointID],
+                     gameValues:GameValues,
                      resourceCounter:mutable.Map[Resource, Int] = mutable.Map(),
                    ) extends JsonSerializable {
 
@@ -61,10 +45,9 @@ case class GameData( gameID:String,
     "host" -> Json.toJson( host ),
     "playerID" -> Json.toJson( playerID ),
     "game" -> Json.toJson( game ),
-    "hasUndo" -> Json.toJson( hasUndo ),
-    "hasRedo" -> Json.toJson( hasRedo ),
-    "resourceImages" -> Json.toJson( resourceImages ),
-    "buildablePoints" -> Json.toJson( buildablePoints.map( _.toJson ) )
+    "gameStatus" -> Json.toJson( gameStatus ),
+    "resourceImages" -> resourceImages.toJson,// Json.toJson( resourceImages ),
+    "gameValues" -> Json.toJson( gameValues )
   )
 
   def gameField:GameField = game.gameField

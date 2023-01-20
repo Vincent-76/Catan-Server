@@ -21,7 +21,7 @@ object SocketError {
     case NoConnectedStructures( id ) => "No connected structures on this placement point!"
     case SettlementRequired( id ) =>
       "You need a settlement on this placement point to build a city!"
-    case InvalidPlacementPoint( id ) => "Invalid placement point!"
+    case InvalidInput( id ) => "Invalid placement point!"
     case NotEnoughPlayers => "Minimum " + controller.game.minPlayers + " players required!"
     case InvalidPlayerColor( color ) => "Invalid player color: [" + color + "]!"
     case RobberOnlyOnLand => "Robber can only be placed on land!"
@@ -55,20 +55,22 @@ object SocketError {
 
 sealed abstract class SocketError( val code:Int, error:String ) extends Throwable( error )
 
-object NoAction extends SocketError( 0, "NoAction" )
+case object NoAction extends SocketError( 0, "NoAction" )
 
-object InvalidCommand extends SocketError( 1, "InvalidCommand" )
+case object InvalidCommand extends SocketError( 1, "InvalidCommand" )
 
-object NoGame extends SocketError( 2, "NoGame" )
+case object NoGame extends SocketError( 2, "NoGame" )
 
-class GameError( error:String ) extends SocketError( 3, error )
+case class GameError( error:String ) extends SocketError( 3, error )
 
-object NoSessionFound extends SocketError( 4, "NoSessionFound" )
+case object NoSessionFound extends SocketError( 4, "NoSessionFound" )
 
-object AlreadyRegistered extends SocketError( 5, "AlreadyRegistered" )
+case object AlreadyRegistered extends SocketError( 5, "AlreadyRegistered" )
 
-object NotPossibleAnymore extends SocketError( 6, "NotPossibleAnymore" )
+case object NotPossibleAnymore extends SocketError( 6, "NotPossibleAnymore" )
 
-object GameAlreadyFull extends SocketError( 7, "GameAlreadyFull" )
+case object GameAlreadyFull extends SocketError( 7, "GameAlreadyFull" )
 
-object Forbidden extends SocketError( 8, "Forbidden" )
+case object Forbidden extends SocketError( 8, "Forbidden" )
+
+case class InvalidInput( input:String ) extends SocketError( 9, s"Invalid Input: $input" )

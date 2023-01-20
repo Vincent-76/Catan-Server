@@ -40,12 +40,12 @@
 			<a id="downloadButton" class="button navButton2" href="@routes.GameController.downloadGame()">
 				<img src="@routes.Assets.versioned( "images/download.png" )" alt="Download" />
 			</a>
-			@if( gameData.hasUndo ) {
+			@if( gameData.gameStatus.hasUndo ) {
 				<a id="undoButton" class="button asyncButton navButton2" href="@routes.GameController.undo()">
 					<img src="@routes.Assets.versioned( "images/undo.png" )" alt="Undo" />
 				</a>
 			}
-			@if( gameData.hasRedo ) {
+			@if( gameData.gameStatus.hasRedo ) {
 				<a id="redoButton" class="button asyncButton navButton2" href="@routes.GameController.redo()">
 					<img src="@routes.Assets.versioned( "images/redo.png" )" alt="Redo" />
 				</a>

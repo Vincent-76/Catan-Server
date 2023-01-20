@@ -1,8 +1,4 @@
-- GameSetup
-	- Settlers logo
-	- dropdowns for game configuration
-	- add players
-	- dice out beginner
+
 - Index new game confirmation dialog
 - Game
 	- Save/Load/Undo/Redo buttons in logpanel
@@ -13,6 +9,6 @@
 
 - Largest Army / Longest Road
 
-- better compass
-
 - serializable info objects
+
+- optimize updates by difference between old and new game case objects

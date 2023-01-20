@@ -3,7 +3,7 @@ package model.socketcommands
 import com.aimit.htwg.catan.CatanModule
 import com.aimit.htwg.catan.model.Placement
 import controllers.SessionController
-import model.{ GameSession, SocketCommand }
+import model.{ GameSession, SocketCommand, SocketCommandScope }
 import play.api.libs.json.{ JsValue, Json }
 
 import scala.util.Try
