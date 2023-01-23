@@ -48,12 +48,12 @@ object SocketError {
     case InvalidPlayer( playerID ) => "Invalid player with id: " + playerID + "!"
     case NothingToUndo => "Nothing to undo!"
     case NothingToRedo => "Nothing to redo!"
-    case e:ControllerError => "Unknown error!"
+    case e:ControllerError => "Unknown error: [" + e.getClass.getSimpleName + "]: " + e.getMessage
     case t:Throwable => t + ": " + t.getMessage
   } )
 }
 
-sealed abstract class SocketError( val code:Int, error:String ) extends Throwable( error )
+class SocketError( val code:Int, error:String ) extends Throwable( error )
 
 case object NoAction extends SocketError( 0, "NoAction" )
 

@@ -18,7 +18,7 @@ object GameValues {
     game.unspecifiedPortFactor,
     game.specifiedPortFactor,
     game.maxPlayerNameLength,
-    DevelopmentCard.impls.filter( _.usable ),
+    DevelopmentCard.impls.map( d => (d, (d.usable, d.desc)) ).toMap,
     BonusCard.impls.map( c => (c, c.bonus) ).toMap
   )
 

@@ -7,7 +7,6 @@ import com.aimit.htwg.catan.model._
 import com.aimit.htwg.catan.util._
 import com.aimit.htwg.catan.model.Card._
 import controllers.{ CatanWebSocketActor, SessionController }
-import model.SocketCommand.updateChanges
 import model.socketcommands.{ GameCommand, GameDataCommand, GameFieldCommand, GameStatusCommand, PlayersCommand, ResourcesCommand, StateCommand, TurnCommand }
 import play.api.data.Form
 import play.api.libs.json.{ JsArray, JsBoolean, JsNull, JsNumber, JsObject, JsString, JsValue, Json }
@@ -19,8 +18,15 @@ import scala.util.{ Failure, Success, Try }
  */
 
 object SocketCommand extends NamedComponent[SocketCommand] {
-  def bindData[T, R]( form:Form[T], data:String, f:T => R ):Try[R] = Try {
-    f( form.bind( Try{ Json.parse( data ) }.getOrElse( JsString( data ) ), Form.FromJsonMaxChars ).get )
+  def bindData[T, R]( form:Form[T], data:String, f:T => R ):Try[R] = {
+    val res = if( form.mapping.mappings.size > 1 )
+      form.bind( Try{ Json.parse( data ) }.getOrElse( JsString( data ) ), Form.FromJsonMaxChars )
+    else
+      form.bind( Map( "" -> data ) )
+    if( res.hasErrors )
+      Failure( new SocketError( -1, res.errors.map( e => e.key + ": " + e.messages.mkString( ", " ) ).mkString( " | " ) ) )
+    else
+      Success( f( res.get ) )
   }
 
   def updateChanges( gameSession:GameSession, o:Game, n:Game ):Unit = List(

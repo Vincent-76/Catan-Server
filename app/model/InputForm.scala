@@ -1,5 +1,6 @@
 package model
 
+import com.aimit.htwg.catan.model.Card.ResourceCards
 import com.aimit.htwg.catan.model.{ NamedComponent, NamedComponentImpl }
 import model.form.NewGame.NamedComponentMapping
 import play.api.data.Forms.{ mapping, number, text }
@@ -24,7 +25,7 @@ object InputForm {
 
   implicit class TryMapping[T]( m:Mapping[Try[T]] ) {
     def tryValidate( validate:T => Boolean = _ => true ):Mapping[Try[T]] = m.verifying( Constraint( ( v:Try[T] ) => v match {
-      case Success( value:T ) =>
+      case Success( value ) =>
         if( validate( value ) )
           Valid
         else Invalid( InvalidInput( value.toString ).getMessage )
@@ -79,6 +80,15 @@ object InputForm {
     v1,
     v2
   )( Tuple2.apply )( Tuple2.unapply ) )
+
+
+
+  case class TestClass( give:ResourceCards, get:ResourceCards )
+  def resourceCardsForm( v1:(String, Mapping[ResourceCards]), v2:(String, Mapping[ResourceCards]) ):Form[TestClass] = Form( mapping(
+    v1,
+    v2
+  )( TestClass.apply )( TestClass.unapply ) )
+
 
 
   def tripleForm[T1, T2, T3]( v1:(String, Mapping[T1]), v2:(String, Mapping[T2]), v3:(String, Mapping[T3]) ):Form[(T1, T2, T3)] = Form( mapping(
