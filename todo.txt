@@ -1,14 +1,6 @@
 
 - Index new game confirmation dialog
-- Game
-	- Save/Load/Undo/Redo buttons in logpanel
-
-- label around input
 
 - MenuBar
 
 - Largest Army / Longest Road
-
-- serializable info objects
-
-- optimize updates by difference between old and new game case objects
