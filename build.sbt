@@ -2,7 +2,7 @@ name := """Catan-Web"""
 organization := "com.aimit"
 version := "1.0-SNAPSHOT"
 
-githubTokenSource := TokenSource.GitConfig("github.token")
+githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 
 scalaVersion := "2.13.10"
 
