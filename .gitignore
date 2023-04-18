@@ -30,6 +30,7 @@ src/main/scala/META-INF
 test.sc
 
 */target/*
+.DS_STORE
 
 savegames/
 

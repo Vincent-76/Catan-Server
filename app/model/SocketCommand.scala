@@ -41,9 +41,6 @@ object SocketCommand extends NamedComponent[SocketCommand] {
   ).filter( e => e._1 != e._2 ).map( _._3 ).distinct.foreach( CatanWebSocketActor.broadcast( gameSession, _ ) )
 
   def jsonDiff( oldJson:JsValue, newJson:JsValue, path:List[JsValue] = Nil ):Map[List[JsValue], JsValue] = {
-    //if( path.contains( Json.toJson( "vertices" ) ) && newJson.isInstanceOf[JsObject] && newJson.asInstanceOf[JsObject].value.get( "id" ).contains( Json.toJson( 1 ) ) ) {
-    //  println( path.map( Json.stringify ).mkString( "." ) + ": Old[" + Json.stringify( oldJson ) + "], New[" + Json.stringify( newJson ) + "]" )
-    //}
     (oldJson, newJson) match {
       case (o:JsArray, n:JsArray) =>
         if( n.value.nonEmpty ) {

@@ -32,7 +32,7 @@ GET		/game/undo					controllers.GameController.undo()
 GET		/game/redo					controllers.GameController.redo()
 
 
-POST 	/game/add_player			controllers.GameController.addPlayer()
+POST /game/add_player				controllers.GameController.addPlayer()
 
 GET	/game/init_beginner				controllers.GameController.setInitBeginnerState()
 
